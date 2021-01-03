@@ -3,6 +3,7 @@
 </script>
 
 <script>
+  import { onMount } from "svelte"
   const pole = 0
   const hole = 1
   const pick = 2
@@ -13,55 +14,62 @@
 
   let circles = []
   let playing = true
+  let bold = false
 
-  const numCircles = 15
-  for (let i = 0; i < numCircles; i++) {
-    circles[i] = pole
-    adjcs.addVertex(i)
-    jumps.addVertex(i)
+  const restart = () => {
+    circles = []
+    playing = true
+    bold = false
 
-    if (i > 0) {
-      adjcs.addEdge(i, i - 1)
+    const numCircles = 15
+    for (let i = 0; i < numCircles; i++) {
+      circles[i] = pole
+      adjcs.addVertex(i)
+      jumps.addVertex(i)
+
+      if (i > 0) {
+        adjcs.addEdge(i, i - 1)
+      }
     }
+
+    circles[0] = hole
+
+    adjcs.addEdge(0, 8)
+    adjcs.addEdge(1, 7)
+    adjcs.addEdge(1, 8)
+    adjcs.addEdge(2, 6)
+    adjcs.addEdge(2, 7)
+    adjcs.addEdge(3, 5)
+    adjcs.addEdge(3, 6)
+    adjcs.addEdge(5, 11)
+    adjcs.addEdge(6, 10)
+    adjcs.addEdge(6, 11)
+    adjcs.addEdge(7, 9)
+    adjcs.addEdge(7, 10)
+    adjcs.addEdge(9, 13)
+    adjcs.addEdge(10, 12)
+    adjcs.addEdge(10, 13)
+    adjcs.addEdge(12, 14)
+
+    jumps.addEdge(0, 2)
+    jumps.addEdge(0, 9)
+    jumps.addEdge(1, 3)
+    jumps.addEdge(1, 10)
+    jumps.addEdge(2, 4)
+    jumps.addEdge(2, 9)
+    jumps.addEdge(2, 11)
+    jumps.addEdge(3, 10)
+    jumps.addEdge(4, 11)
+    jumps.addEdge(5, 7)
+    jumps.addEdge(5, 12)
+    jumps.addEdge(6, 8)
+    jumps.addEdge(6, 13)
+    jumps.addEdge(7, 12)
+    jumps.addEdge(8, 13)
+    jumps.addEdge(9, 11)
+    jumps.addEdge(9, 14)
+    jumps.addEdge(11, 14)
   }
-
-  circles[0] = hole
-
-  adjcs.addEdge(0, 8)
-  adjcs.addEdge(1, 7)
-  adjcs.addEdge(1, 8)
-  adjcs.addEdge(2, 6)
-  adjcs.addEdge(2, 7)
-  adjcs.addEdge(3, 5)
-  adjcs.addEdge(3, 6)
-  adjcs.addEdge(5, 11)
-  adjcs.addEdge(6, 10)
-  adjcs.addEdge(6, 11)
-  adjcs.addEdge(7, 9)
-  adjcs.addEdge(7, 10)
-  adjcs.addEdge(9, 13)
-  adjcs.addEdge(10, 12)
-  adjcs.addEdge(10, 13)
-  adjcs.addEdge(12, 14)
-
-  jumps.addEdge(0, 2)
-  jumps.addEdge(0, 9)
-  jumps.addEdge(1, 3)
-  jumps.addEdge(1, 10)
-  jumps.addEdge(2, 4)
-  jumps.addEdge(2, 9)
-  jumps.addEdge(2, 11)
-  jumps.addEdge(3, 10)
-  jumps.addEdge(4, 11)
-  jumps.addEdge(5, 7)
-  jumps.addEdge(5, 12)
-  jumps.addEdge(6, 8)
-  jumps.addEdge(6, 13)
-  jumps.addEdge(7, 12)
-  jumps.addEdge(8, 13)
-  jumps.addEdge(9, 11)
-  jumps.addEdge(9, 14)
-  jumps.addEdge(11, 14)
 
   const commonBetween = (a, b) =>
     adjcs.adjacencyList[a].filter(common =>
@@ -120,6 +128,7 @@
 
       if (hints.length == 0) {
         playing = false
+        bold = true
       }
 
       return
@@ -130,6 +139,8 @@
       clearDests()
     }
   }
+
+  onMount(() => restart())
 </script>
 
 <style>
@@ -212,13 +223,24 @@
     background-color: blue;
   }
 
+  .restart {
+    cursor: pointer;
+  }
+
   .playing {
     visibility: hidden;
+  }
+
+  .bold {
+    font-weight: bold;
   }
 </style>
 
 <main>
-  <div class:playing>GAME OVER</div>
+  <div>
+    <span class="restart" class:bold on:click={restart}>RESTART GAME</span>
+    <span class:playing> | GAME OVER</span>
+  </div>
   <div class="triangle">
     {#each circles as _, i}
       <div
