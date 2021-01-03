@@ -3,47 +3,45 @@
 </script>
 
 <script>
-  const standingPole = 0
-  const emptyHole = 1
-  const pickedPole = 2
-  const jumpDest = 3
+  const pole = 0
+  const hole = 1
+  const pick = 2
+  const dest = 3
 
-  const adjacents = new Graph()
+  const adjcs = new Graph()
   const jumps = new Graph()
 
   let state = []
 
-  const numVertices = 15
-  for (let i = 0; i < numVertices; i++) {
-    state[i] = standingPole
-    adjacents.addVertex(i)
+  const numCircles = 15
+  for (let i = 0; i < numCircles; i++) {
+    state[i] = pole
+    adjcs.addVertex(i)
     jumps.addVertex(i)
 
     if (i > 0) {
-      adjacents.addEdge(i, i - 1)
+      adjcs.addEdge(i, i - 1)
     }
   }
 
-  state[0] = emptyHole
-  state[1] = emptyHole
-  state[9] = emptyHole
+  state[0] = hole
 
-  adjacents.addEdge(0, 8)
-  adjacents.addEdge(1, 7)
-  adjacents.addEdge(1, 8)
-  adjacents.addEdge(2, 6)
-  adjacents.addEdge(2, 7)
-  adjacents.addEdge(3, 5)
-  adjacents.addEdge(3, 6)
-  adjacents.addEdge(5, 11)
-  adjacents.addEdge(6, 10)
-  adjacents.addEdge(6, 11)
-  adjacents.addEdge(7, 9)
-  adjacents.addEdge(7, 10)
-  adjacents.addEdge(9, 13)
-  adjacents.addEdge(10, 12)
-  adjacents.addEdge(10, 13)
-  adjacents.addEdge(12, 14)
+  adjcs.addEdge(0, 8)
+  adjcs.addEdge(1, 7)
+  adjcs.addEdge(1, 8)
+  adjcs.addEdge(2, 6)
+  adjcs.addEdge(2, 7)
+  adjcs.addEdge(3, 5)
+  adjcs.addEdge(3, 6)
+  adjcs.addEdge(5, 11)
+  adjcs.addEdge(6, 10)
+  adjcs.addEdge(6, 11)
+  adjcs.addEdge(7, 9)
+  adjcs.addEdge(7, 10)
+  adjcs.addEdge(9, 13)
+  adjcs.addEdge(10, 12)
+  adjcs.addEdge(10, 13)
+  adjcs.addEdge(12, 14)
 
   jumps.addEdge(0, 2)
   jumps.addEdge(0, 9)
@@ -64,59 +62,49 @@
   jumps.addEdge(9, 14)
   jumps.addEdge(11, 14)
 
-  const commonPosition = (a, b) =>
-    adjacents.adjacencyList[a].filter(common =>
-      adjacents.adjacencyList[b].includes(common)
+  const commonBetween = (a, b) =>
+    adjcs.adjacencyList[a].filter(common =>
+      adjcs.adjacencyList[b].includes(common)
     )[0]
 
-  const clearDestinations = () =>
+  const clearDests = () =>
     state.forEach(
-      (_, i) => (state[i] = state[i] == jumpDest ? emptyHole : state[i])
+      (_, i) => (state[i] = state[i] == dest ? hole : state[i])
     )
 
-  const change = currentlyClicked => {
-    const previouslyPicked = state.indexOf(pickedPole)
-    const emptyHoles = [...state.keys()].filter(i => state[i] == emptyHole)
-    const adjacentJump = jumps.adjacencyList[currentlyClicked].indexOf(
-      previouslyPicked
+  const change = curr => {
+    const prev = state.indexOf(pick)
+    const emptyHoles = [...state.keys()].filter(i => state[i] == hole)
+    const possibleDests = jumps.adjacencyList[curr].filter(jump =>
+      emptyHoles.includes(jump)
     )
-    const possibleJumps = jumps.adjacencyList[
-      currentlyClicked
-    ].filter(jump => emptyHoles.includes(jump))
 
-    if (
-      state[currentlyClicked] == standingPole &&
-      previouslyPicked == -1 &&
-      possibleJumps.length > 0
-    ) {
-      state[currentlyClicked] = pickedPole
-      jumps.adjacencyList[currentlyClicked].forEach(jump => {
-        const jumpedOver = commonPosition(currentlyClicked, jump)
-        console.log(currentlyClicked, jump, jumpedOver)
-        if (
-          state[jump] == emptyHole &&
-          state[jumpedOver] == standingPole
-        ) {
-          state[jump] = jumpDest
+    if (state[curr] == pole && prev == -1 && possibleDests.length > 0) {
+      state[curr] = pick
+      jumps.adjacencyList[curr].forEach(jump => {
+        const jumpedOver = commonBetween(curr, jump)
+
+        if (state[jump] == hole && state[jumpedOver] == pole) {
+          state[jump] = dest
         }
       })
 
       return
     }
 
-    if (state[currentlyClicked] == jumpDest && adjacentJump != -1) {
-      const jumpedOver = commonPosition(currentlyClicked, previouslyPicked)
-      state[currentlyClicked] = standingPole
-      state[previouslyPicked] = emptyHole
-      state[jumpedOver] = emptyHole
-      clearDestinations()
+    if (state[curr] == dest) {
+      const jumpedOver = commonBetween(curr, prev)
+      state[curr] = pole
+      state[prev] = hole
+      state[jumpedOver] = hole
+      clearDests()
 
       return
     }
 
-    if (state[currentlyClicked] == pickedPole) {
-      state[currentlyClicked] = standingPole
-      clearDestinations()
+    if (state[curr] == pick) {
+      state[curr] = pole
+      clearDests()
     }
   }
 </script>
@@ -207,10 +195,10 @@
     {#each state as _, i}
       <div
         class="circle div{i}"
-        class:gray={state[i] == emptyHole}
-        class:red={state[i] == standingPole}
-        class:green={state[i] == pickedPole}
-        class:blue={state[i] == jumpDest}
+        class:gray={state[i] == hole}
+        class:red={state[i] == pole}
+        class:green={state[i] == pick}
+        class:blue={state[i] == dest}
         on:click={() => change(i)}>
         {i}
       </div>
