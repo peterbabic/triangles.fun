@@ -62,42 +62,43 @@
   jumps.addEdge(9, 14)
   jumps.addEdge(11, 14)
 
-  const change = clicked => {
-    const indexOfPicked = state.indexOf(pickedPole)
+  const change = currentlyClicked => {
+    const previouslyPicked = state.indexOf(pickedPole)
     const emptyHoles = [...state.keys()].filter(i => state[i] == emptyHole)
-    const possibleJumps = jumps.adjacencyList[clicked].filter(jump =>
-      emptyHoles.includes(jump)
-    )
+    const possibleJumps = jumps.adjacencyList[
+      currentlyClicked
+    ].filter(jump => emptyHoles.includes(jump))
 
     if (
-      state[clicked] == standingPole &&
-      indexOfPicked == -1 &&
+      state[currentlyClicked] == standingPole &&
+      previouslyPicked == -1 &&
       possibleJumps.length > 0
     ) {
-      state[clicked] = pickedPole
+      state[currentlyClicked] = pickedPole
 
       return
     }
 
-    const possibleMove = jumps.adjacencyList[clicked].filter(
-      jump => jump == indexOfPicked
+    const adjacentJump = jumps.adjacencyList[currentlyClicked].indexOf(
+      previouslyPicked
     )
 
-    if (state[clicked] == emptyHole && possibleMove.length == 1) {
-      const indexOfMoved = possibleMove[0]
-      const jumpedOver = adjacents.adjacencyList[clicked].filter(common =>
-        adjacents.adjacencyList[indexOfMoved].includes(common)
+    if (state[currentlyClicked] == emptyHole && adjacentJump != -1) {
+      const jumpedOver = adjacents.adjacencyList[
+        currentlyClicked
+      ].filter(common =>
+        adjacents.adjacencyList[previouslyPicked].includes(common)
       )
 
-      state[clicked] = standingPole
-      state[indexOfMoved] = emptyHole
+      state[currentlyClicked] = standingPole
+      state[previouslyPicked] = emptyHole
       state[jumpedOver] = emptyHole
 
       return
     }
 
-    if (state[clicked] == pickedPole) {
-      state[clicked] = standingPole
+    if (state[currentlyClicked] == pickedPole) {
+      state[currentlyClicked] = standingPole
     }
   }
 </script>
