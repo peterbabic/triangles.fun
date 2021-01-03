@@ -63,18 +63,22 @@
   jumps.addEdge(11, 14)
 
   const change = clicked => {
+    const indexOfPicked = state.indexOf(pickedPole)
     const emptyHoles = [...state.keys()].filter(i => state[i] == emptyHole)
     const possibleJumps = jumps.adjacencyList[clicked].filter(jump =>
       emptyHoles.includes(jump)
     )
 
-    if (state[clicked] == standingPole && possibleJumps.length > 0) {
+    if (
+      state[clicked] == standingPole &&
+      indexOfPicked == -1 &&
+      possibleJumps.length > 0
+    ) {
       state[clicked] = pickedPole
 
       return
     }
 
-    const indexOfPicked = state.indexOf(2)
     const possibleMove = jumps.adjacencyList[clicked].filter(
       jump => jump == indexOfPicked
     )
