@@ -1,10 +1,41 @@
+<script context="module">
+  import Graph from "./Graph.js"
+</script>
+
 <script>
-  let states = [true]
-  for (let i = 1; i < 15; i++) {
+  const numVertices = 15
+  const graph = new Graph()
+  let states = []
+
+  for (let i = 0; i < numVertices; i++) {
     states[i] = false
+    graph.addVertex(i)
+
+    if (i > 0) {
+      graph.addEdge(i, i - 1)
+    }
   }
 
-  const change = num => (states[num] = !states[num])
+  graph.addEdge(0, 8)
+  graph.addEdge(1, 7)
+  graph.addEdge(1, 8)
+  graph.addEdge(2, 6)
+  graph.addEdge(2, 7)
+  graph.addEdge(3, 5)
+  graph.addEdge(3, 6)
+  graph.addEdge(5, 11)
+  graph.addEdge(6, 10)
+  graph.addEdge(6, 11)
+  graph.addEdge(7, 9)
+  graph.addEdge(7, 10)
+  graph.addEdge(9, 13)
+  graph.addEdge(10, 12)
+  graph.addEdge(10, 13)
+  graph.addEdge(12, 14)
+
+  const change = num => {
+    console.log(num, graph.adjacencyList[num])
+  }
 </script>
 
 <style>
@@ -68,74 +99,23 @@
     height: 30px;
     background: red;
     clip-path: circle();
+    text-align: center;
   }
 
-  .empty {
-    background-color: gray;
+  .green {
+    background-color: green;
   }
 </style>
 
 <main>
   <div class="triangle">
-    <div
-      class="circle div0"
-      class:empty={states[0]}
-      on:click={() => change(0)} />
-    <div
-      class="circle div1"
-      class:empty={states[1]}
-      on:click={() => change(1)} />
-    <div
-      class="circle div2"
-      class:empty={states[2]}
-      on:click={() => change(2)} />
-    <div
-      class="circle div3"
-      class:empty={states[3]}
-      on:click={() => change(3)} />
-    <div
-      class="circle div4"
-      class:empty={states[4]}
-      on:click={() => change(4)} />
-    <div
-      class="circle div5"
-      class:empty={states[5]}
-      on:click={() => change(5)} />
-    <div
-      class="circle div6"
-      class:empty={states[6]}
-      on:click={() => change(6)} />
-    <div
-      class="circle div7"
-      class:empty={states[7]}
-      on:click={() => change(7)} />
-    <div
-      class="circle div8"
-      class:empty={states[8]}
-      on:click={() => change(8)} />
-    <div
-      class="circle div9"
-      class:empty={states[9]}
-      on:click={() => change(9)} />
-    <div
-      class="circle div10"
-      class:empty={states[10]}
-      on:click={() => change(10)} />
-    <div
-      class="circle div11"
-      class:empty={states[11]}
-      on:click={() => change(11)} />
-    <div
-      class="circle div12"
-      class:empty={states[12]}
-      on:click={() => change(12)} />
-    <div
-      class="circle div13"
-      class:empty={states[13]}
-      on:click={() => change(13)} />
-    <div
-      class="circle div14"
-      class:empty={states[14]}
-      on:click={() => change(14)} />
+    {#each states as _, i}
+      <div
+        class="circle div{i}"
+        class:green={states[i]}
+        on:click={() => change(i)}>
+        {i}
+      </div>
+    {/each}
   </div>
 </main>
