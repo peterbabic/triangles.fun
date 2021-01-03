@@ -81,8 +81,13 @@
 
     if (state[clicked] == emptyHole && possibleMove.length == 1) {
       const indexOfMoved = possibleMove[0]
+      const jumpedOver = adjacents.adjacencyList[clicked].filter(common =>
+        adjacents.adjacencyList[indexOfMoved].includes(common)
+      )
+
       state[clicked] = standingPole
       state[indexOfMoved] = emptyHole
+      state[jumpedOver] = emptyHole
 
       return
     }
