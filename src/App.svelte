@@ -12,6 +12,7 @@
   const jumps = new Graph()
 
   let circles = []
+  let playing = true
 
   const numCircles = 15
   for (let i = 0; i < numCircles; i++) {
@@ -72,21 +73,28 @@
       (_, i) => (circles[i] = circles[i] == dest ? hole : circles[i])
     )
 
+  const getDests = curr => {
+    let dests = []
+
+    jumps.adjacencyList[curr].forEach(jump => {
+      const jumpedOver = commonBetween(curr, jump)
+
+      if (circles[jump] == hole && circles[jumpedOver] == pole) {
+        dests.push(jump)
+      }
+    })
+
+    return dests
+  }
+
   const change = curr => {
     const prev = circles.indexOf(pick)
 
     if (circles[curr] == pole && prev == -1) {
-      let destExists = false
-      jumps.adjacencyList[curr].forEach(jump => {
-        const jumpedOver = commonBetween(curr, jump)
+      let dests = getDests(curr)
+      dests.forEach(d => (circles[d] = dest))
 
-        if (circles[jump] == hole && circles[jumpedOver] == pole) {
-          circles[jump] = dest
-          destExists = true
-        }
-      })
-
-      if (destExists) {
+      if (dests.length > 0) {
         circles[curr] = pick
       }
 
@@ -100,8 +108,19 @@
       circles[jumpedOver] = hole
       clearDests()
 
-      const remaining = circles.filter(circle => circle == pole)
-      console.log(remaining.length)
+      let hints = []
+      circles.forEach((circle, i) => {
+        if (circle == pole) {
+          const dests = getDests(i)
+          if (dests.length > 0) {
+            hints.push(i)
+          }
+        }
+      })
+
+      if (hints.length == 0) {
+        playing = false
+      }
 
       return
     }
@@ -192,9 +211,14 @@
   .blue {
     background-color: blue;
   }
+
+  .playing {
+    visibility: hidden;
+  }
 </style>
 
 <main>
+  <div class:playing>GAME OVER</div>
   <div class="triangle">
     {#each circles as _, i}
       <div
