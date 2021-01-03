@@ -11,11 +11,11 @@
   const adjcs = new Graph()
   const jumps = new Graph()
 
-  let state = []
+  let circles = []
 
   const numCircles = 15
   for (let i = 0; i < numCircles; i++) {
-    state[i] = pole
+    circles[i] = pole
     adjcs.addVertex(i)
     jumps.addVertex(i)
 
@@ -24,7 +24,7 @@
     }
   }
 
-  state[0] = hole
+  circles[0] = hole
 
   adjcs.addEdge(0, 8)
   adjcs.addEdge(1, 7)
@@ -68,43 +68,46 @@
     )[0]
 
   const clearDests = () =>
-    state.forEach(
-      (_, i) => (state[i] = state[i] == dest ? hole : state[i])
+    circles.forEach(
+      (_, i) => (circles[i] = circles[i] == dest ? hole : circles[i])
     )
 
   const change = curr => {
-    const prev = state.indexOf(pick)
+    const prev = circles.indexOf(pick)
 
-    if (state[curr] == pole && prev == -1) {
+    if (circles[curr] == pole && prev == -1) {
       let destExists = false
       jumps.adjacencyList[curr].forEach(jump => {
         const jumpedOver = commonBetween(curr, jump)
 
-        if (state[jump] == hole && state[jumpedOver] == pole) {
-          state[jump] = dest
+        if (circles[jump] == hole && circles[jumpedOver] == pole) {
+          circles[jump] = dest
           destExists = true
         }
       })
 
       if (destExists) {
-        state[curr] = pick
+        circles[curr] = pick
       }
 
       return
     }
 
-    if (state[curr] == dest) {
+    if (circles[curr] == dest) {
       const jumpedOver = commonBetween(curr, prev)
-      state[curr] = pole
-      state[prev] = hole
-      state[jumpedOver] = hole
+      circles[curr] = pole
+      circles[prev] = hole
+      circles[jumpedOver] = hole
       clearDests()
+
+      const remaining = circles.filter(circle => circle == pole)
+      console.log(remaining.length)
 
       return
     }
 
-    if (state[curr] == pick) {
-      state[curr] = pole
+    if (circles[curr] == pick) {
+      circles[curr] = pole
       clearDests()
     }
   }
@@ -193,13 +196,13 @@
 
 <main>
   <div class="triangle">
-    {#each state as _, i}
+    {#each circles as _, i}
       <div
         class="circle div{i}"
-        class:gray={state[i] == hole}
-        class:red={state[i] == pole}
-        class:green={state[i] == pick}
-        class:blue={state[i] == dest}
+        class:gray={circles[i] == hole}
+        class:red={circles[i] == pole}
+        class:green={circles[i] == pick}
+        class:blue={circles[i] == dest}
         on:click={() => change(i)}>
         {i}
       </div>
