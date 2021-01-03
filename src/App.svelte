@@ -4,37 +4,66 @@
 
 <script>
   const numVertices = 15
-  const graph = new Graph()
-  let states = []
+  const adjacents = new Graph()
+  const jumps = new Graph()
+  let emptys = []
 
   for (let i = 0; i < numVertices; i++) {
-    states[i] = false
-    graph.addVertex(i)
+    emptys[i] = false
+    adjacents.addVertex(i)
+    jumps.addVertex(i)
 
     if (i > 0) {
-      graph.addEdge(i, i - 1)
+      adjacents.addEdge(i, i - 1)
     }
   }
 
-  graph.addEdge(0, 8)
-  graph.addEdge(1, 7)
-  graph.addEdge(1, 8)
-  graph.addEdge(2, 6)
-  graph.addEdge(2, 7)
-  graph.addEdge(3, 5)
-  graph.addEdge(3, 6)
-  graph.addEdge(5, 11)
-  graph.addEdge(6, 10)
-  graph.addEdge(6, 11)
-  graph.addEdge(7, 9)
-  graph.addEdge(7, 10)
-  graph.addEdge(9, 13)
-  graph.addEdge(10, 12)
-  graph.addEdge(10, 13)
-  graph.addEdge(12, 14)
+  emptys[0] = true
+  emptys[9] = true
+
+  adjacents.addEdge(0, 8)
+  adjacents.addEdge(1, 7)
+  adjacents.addEdge(1, 8)
+  adjacents.addEdge(2, 6)
+  adjacents.addEdge(2, 7)
+  adjacents.addEdge(3, 5)
+  adjacents.addEdge(3, 6)
+  adjacents.addEdge(5, 11)
+  adjacents.addEdge(6, 10)
+  adjacents.addEdge(6, 11)
+  adjacents.addEdge(7, 9)
+  adjacents.addEdge(7, 10)
+  adjacents.addEdge(9, 13)
+  adjacents.addEdge(10, 12)
+  adjacents.addEdge(10, 13)
+  adjacents.addEdge(12, 14)
+
+  jumps.addEdge(0, 2)
+  jumps.addEdge(0, 9)
+  jumps.addEdge(1, 3)
+  jumps.addEdge(1, 10)
+  jumps.addEdge(2, 4)
+  jumps.addEdge(2, 9)
+  jumps.addEdge(2, 11)
+  jumps.addEdge(3, 10)
+  jumps.addEdge(4, 11)
+  jumps.addEdge(5, 7)
+  jumps.addEdge(5, 12)
+  jumps.addEdge(6, 8)
+  jumps.addEdge(6, 13)
+  jumps.addEdge(7, 12)
+  jumps.addEdge(8, 13)
+  jumps.addEdge(9, 11)
+  jumps.addEdge(9, 14)
+  jumps.addEdge(11, 14)
 
   const change = num => {
-    console.log(num, graph.adjacencyList[num])
+    const indices = [...emptys.keys()].filter(i => emptys[i])
+
+    console.log(
+      num,
+      jumps.adjacencyList[num].filter(v => indices.includes(v))
+    )
   }
 </script>
 
@@ -102,17 +131,17 @@
     text-align: center;
   }
 
-  .green {
-    background-color: green;
+  .gray {
+    background-color: gray;
   }
 </style>
 
 <main>
   <div class="triangle">
-    {#each states as _, i}
+    {#each emptys as _, i}
       <div
         class="circle div{i}"
-        class:green={states[i]}
+        class:gray={emptys[i]}
         on:click={() => change(i)}>
         {i}
       </div>
