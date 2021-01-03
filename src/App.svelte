@@ -74,20 +74,21 @@
 
   const change = curr => {
     const prev = state.indexOf(pick)
-    const emptyHoles = [...state.keys()].filter(i => state[i] == hole)
-    const possibleDests = jumps.adjacencyList[curr].filter(jump =>
-      emptyHoles.includes(jump)
-    )
 
-    if (state[curr] == pole && prev == -1 && possibleDests.length > 0) {
-      state[curr] = pick
+    if (state[curr] == pole && prev == -1) {
+      let destExists = false
       jumps.adjacencyList[curr].forEach(jump => {
         const jumpedOver = commonBetween(curr, jump)
 
         if (state[jump] == hole && state[jumpedOver] == pole) {
           state[jump] = dest
+          destExists = true
         }
       })
+
+      if (destExists) {
+        state[curr] = pick
+      }
 
       return
     }
