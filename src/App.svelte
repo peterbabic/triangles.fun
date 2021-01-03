@@ -63,9 +63,9 @@
   jumps.addEdge(11, 14)
 
   const change = clicked => {
-    const indicesofHoles = [...state.keys()].filter(i => state[i])
-    const possibleJumps = jumps.adjacencyList[clicked].filter(hole =>
-      indicesofHoles.includes(hole)
+    const emptyHoles = [...state.keys()].filter(i => state[i] == emptyHole)
+    const possibleJumps = jumps.adjacencyList[clicked].filter(jump =>
+      emptyHoles.includes(jump)
     )
 
     if (state[clicked] == standingPole && possibleJumps.length > 0) {
