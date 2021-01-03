@@ -6,10 +6,10 @@
   const numVertices = 15
   const adjacents = new Graph()
   const jumps = new Graph()
-  let emptys = []
+  let states = []
 
   for (let i = 0; i < numVertices; i++) {
-    emptys[i] = false
+    states[i] = false
     adjacents.addVertex(i)
     jumps.addVertex(i)
 
@@ -18,8 +18,8 @@
     }
   }
 
-  emptys[0] = true
-  emptys[9] = true
+  states[0] = true
+  states[9] = true
 
   adjacents.addEdge(0, 8)
   adjacents.addEdge(1, 7)
@@ -58,12 +58,33 @@
   jumps.addEdge(11, 14)
 
   const change = num => {
-    const indices = [...emptys.keys()].filter(i => emptys[i])
-
-    console.log(
-      num,
-      jumps.adjacencyList[num].filter(v => indices.includes(v))
+    const indicesofHoles = [...states.keys()].filter(i => states[i])
+    const possibleJumps = jumps.adjacencyList[num].filter(hole =>
+      indicesofHoles.includes(hole)
     )
+
+    if (states[num] == 0 && possibleJumps.length > 0) {
+      states[num] = 2
+
+      return
+    }
+
+    const indexOfPicked = states.indexOf(2)
+    const possibleMove = jumps.adjacencyList[num].filter(
+      jump => jump == indexOfPicked
+    )
+
+    if (states[num] == 1 && possibleMove.length == 1) {
+      const indexOfMoved = possibleMove[0]
+      states[num] = 0
+      states[indexOfMoved] = 1
+
+      return
+    }
+
+    if (states[num] == 2) {
+      states[num] = 0
+    }
   }
 </script>
 
@@ -126,22 +147,36 @@
   .circle {
     width: 30px;
     height: 30px;
-    background: red;
     clip-path: circle();
     text-align: center;
+  }
+
+  .red {
+    background-color: red;
   }
 
   .gray {
     background-color: gray;
   }
+
+  .green {
+    background-color: green;
+  }
+
+  .yellow {
+    background-color: yellow;
+  }
 </style>
 
 <main>
   <div class="triangle">
-    {#each emptys as _, i}
+    {#each states as _, i}
       <div
         class="circle div{i}"
-        class:gray={emptys[i]}
+        class:red={states[i] == 0}
+        class:gray={states[i] == 1}
+        class:green={states[i] == 2}
+        class:yellow={states[i] == 3}
         on:click={() => change(i)}>
         {i}
       </div>
