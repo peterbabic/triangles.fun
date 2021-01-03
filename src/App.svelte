@@ -3,13 +3,19 @@
 </script>
 
 <script>
-  const numVertices = 15
+  const standingPole = 0
+  const emptyHole = 1
+  const pickedPole = 2
+  const jumpDest = 3
+
   const adjacents = new Graph()
   const jumps = new Graph()
-  let states = []
 
+  let state = []
+
+  const numVertices = 15
   for (let i = 0; i < numVertices; i++) {
-    states[i] = false
+    state[i] = standingPole
     adjacents.addVertex(i)
     jumps.addVertex(i)
 
@@ -18,8 +24,7 @@
     }
   }
 
-  states[0] = true
-  states[9] = true
+  state[0] = emptyHole
 
   adjacents.addEdge(0, 8)
   adjacents.addEdge(1, 7)
@@ -57,33 +62,33 @@
   jumps.addEdge(9, 14)
   jumps.addEdge(11, 14)
 
-  const change = num => {
-    const indicesofHoles = [...states.keys()].filter(i => states[i])
-    const possibleJumps = jumps.adjacencyList[num].filter(hole =>
+  const change = clicked => {
+    const indicesofHoles = [...state.keys()].filter(i => state[i])
+    const possibleJumps = jumps.adjacencyList[clicked].filter(hole =>
       indicesofHoles.includes(hole)
     )
 
-    if (states[num] == 0 && possibleJumps.length > 0) {
-      states[num] = 2
+    if (state[clicked] == standingPole && possibleJumps.length > 0) {
+      state[clicked] = pickedPole
 
       return
     }
 
-    const indexOfPicked = states.indexOf(2)
-    const possibleMove = jumps.adjacencyList[num].filter(
+    const indexOfPicked = state.indexOf(2)
+    const possibleMove = jumps.adjacencyList[clicked].filter(
       jump => jump == indexOfPicked
     )
 
-    if (states[num] == 1 && possibleMove.length == 1) {
+    if (state[clicked] == emptyHole && possibleMove.length == 1) {
       const indexOfMoved = possibleMove[0]
-      states[num] = 0
-      states[indexOfMoved] = 1
+      state[clicked] = standingPole
+      state[indexOfMoved] = emptyHole
 
       return
     }
 
-    if (states[num] == 2) {
-      states[num] = 0
+    if (state[clicked] == pickedPole) {
+      state[clicked] = standingPole
     }
   }
 </script>
@@ -170,13 +175,13 @@
 
 <main>
   <div class="triangle">
-    {#each states as _, i}
+    {#each state as _, i}
       <div
         class="circle div{i}"
-        class:red={states[i] == 0}
-        class:gray={states[i] == 1}
-        class:green={states[i] == 2}
-        class:yellow={states[i] == 3}
+        class:gray={state[i] == emptyHole}
+        class:red={state[i] == standingPole}
+        class:green={state[i] == pickedPole}
+        class:yellow={state[i] == jumpDest}
         on:click={() => change(i)}>
         {i}
       </div>
