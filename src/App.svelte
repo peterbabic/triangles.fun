@@ -1,9 +1,13 @@
-<script context="module">
-  import Graph from "./Graph.js"
-</script>
-
 <script>
+  import Graph from "./Graph.js"
   import { onMount } from "svelte"
+  import { crossfade, scale } from "svelte/transition"
+
+  const [send, receive] = crossfade({
+    duration: 400,
+    fallback: scale,
+  })
+
   const pole = 0
   const hole = 1
   const pick = 2
@@ -144,15 +148,6 @@
 </script>
 
 <style>
-  .triangle {
-    width: 600px;
-    height: 450px;
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-  }
   .div0 {
     grid-area: 5 / 1 / 6 / 2;
   }
@@ -199,27 +194,41 @@
     grid-area: 1 / 5 / 2 / 6;
   }
 
+  .triangle {
+    width: 600px;
+    height: 450px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+  }
+
   .circle {
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     clip-path: circle();
     text-align: center;
     color: white;
   }
 
   .red {
+    cursor: pointer;
     background-color: red;
   }
 
   .gray {
+    cursor: default;
     background-color: gray;
   }
 
   .green {
+    cursor: pointer;
     background-color: green;
   }
 
   .blue {
+    cursor: pointer;
     background-color: blue;
   }
 
@@ -243,15 +252,34 @@
   </div>
   <div class="triangle">
     {#each circles as _, i}
-      <div
-        class="circle div{i}"
-        class:gray={circles[i] == hole}
-        class:red={circles[i] == pole}
-        class:green={circles[i] == pick}
-        class:blue={circles[i] == dest}
-        on:click={() => change(i)}>
-        {i}
-      </div>
+      {#if circles[i] == hole}
+        <div
+          in:receive={{ key: i }}
+          out:send={{ key: i }}
+          class="circle div{i} gray"
+          on:click={() => change(i)} />
+      {/if}
+      {#if circles[i] == pole}
+        <div
+          in:receive={{ key: i }}
+          out:send={{ key: i }}
+          class="circle div{i} red"
+          on:click={() => change(i)} />
+      {/if}
+      {#if circles[i] == pick}
+        <div
+          in:receive={{ key: i }}
+          out:send={{ key: i }}
+          class="circle div{i} green"
+          on:click={() => change(i)} />
+      {/if}
+      {#if circles[i] == dest}
+        <div
+          in:receive={{ key: i }}
+          out:send={{ key: i }}
+          class="circle div{i} blue"
+          on:click={() => change(i)} />
+      {/if}
     {/each}
   </div>
 </main>
