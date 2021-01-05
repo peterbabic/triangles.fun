@@ -13,14 +13,16 @@
   const pick = 2
   const dest = 3
 
-  const adjcs = new Graph()
-  const jumps = new Graph()
-
   let circles = []
-  let playing = true
-  let bold = false
+  let playing
+  let bold
+  let adjcs
+  let jumps
 
   const restart = () => {
+    adjcs = new Graph()
+    jumps = new Graph()
+
     circles = []
     playing = true
     bold = false
@@ -248,7 +250,7 @@
 <main>
   <div>
     <span class="restart" class:bold on:click={restart}>RESTART GAME</span>
-    <span class:playing> | GAME OVER</span>
+    <span data-cy="game-over" class:playing> | GAME OVER</span>
   </div>
   <div class="triangle">
     {#each circles as _, i}
