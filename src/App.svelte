@@ -198,7 +198,7 @@
 
   .triangle {
     width: 600px;
-    height: 450px;
+    height: 520px;
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(5, 1fr);
@@ -214,24 +214,30 @@
     color: white;
   }
 
-  .red {
+  .pole {
     cursor: pointer;
-    background-color: red;
+    background-color: #8fbcbb;
   }
 
-  .gray {
+  .hole {
     cursor: default;
-    background-color: gray;
+    background-color: #d8dee9;
   }
 
-  .green {
+  .pick {
     cursor: pointer;
-    background-color: green;
+    background-color: #a3be8c;
   }
 
-  .blue {
+  .dest {
     cursor: pointer;
-    background-color: blue;
+    background-color: #81a1c1;
+  }
+
+  :global(body) {
+    background-color: #eceff4;
+    margin: 0;
+    padding: 15px;
   }
 
   .restart {
@@ -258,28 +264,28 @@
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
-          class="circle div{i} gray"
+          class="circle div{i} hole"
           on:click={() => change(i)} />
       {/if}
       {#if circles[i] == pole}
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
-          class="circle div{i} red"
+          class="circle div{i} pole"
           on:click={() => change(i)} />
       {/if}
       {#if circles[i] == pick}
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
-          class="circle div{i} green"
+          class="circle div{i} pick"
           on:click={() => change(i)} />
       {/if}
       {#if circles[i] == dest}
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
-          class="circle div{i} blue"
+          class="circle div{i} dest"
           on:click={() => change(i)} />
       {/if}
     {/each}
