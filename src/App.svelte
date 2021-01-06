@@ -8,13 +8,16 @@
     fallback: scale,
   })
 
+  const MAX_STEPS = 13
   const pole = 0
   const hole = 1
   const pick = 2
   const dest = 3
 
   let circles = []
-  let playing
+  let steps = 0
+  let gameover
+  let victory
   let bold
   let adjcs
   let jumps
@@ -24,7 +27,9 @@
     jumps = new Graph()
 
     circles = []
-    playing = true
+    steps = 0
+    gameover = false
+    victory = false
     bold = false
 
     const numCircles = 15
@@ -155,10 +160,19 @@
     if (circles[curr] == dest) {
       jumpOver(circles, prev, curr)
       clearDests()
+      steps++
+      console.log(steps)
+
+      if (steps == MAX_STEPS) {
+        bold = true
+        victory = true
+
+        return
+      }
 
       const hints = getHints(circles)
       if (hints.length == 0) {
-        playing = false
+        gameover = true
         bold = true
       }
 
@@ -171,20 +185,22 @@
     }
   }
 
-  class TT {
-    constructor(src, des) {
-      this.SRC = src
-      this.DES = des
-      this.xx = []
+  class Tree {
+    constructor(solution, depth) {
+      this.depth = depth
+      this.solution = solution
+      this.children = []
     }
   }
 
   onMount(() => {
     restart()
-    let shadow = [...circles]
 
-    const start = 0
-    const moves = new TT(start, undefined)
+    let depth = 0
+    let solutions = []
+    let shadow = [...circles]
+    const MAX_DEPTH = 13
+    const moves = new Tree("", depth)
 
     const recurse = move => {
       const hints = getHints(shadow)
@@ -193,18 +209,25 @@
       }
 
       hints.forEach(hint => {
-        getDests(shadow, hint).forEach(des => {
-          const last = move.xx.push(new TT(hint, des)) - 1
-          jumpOver(shadow, hint, des)
-          recurse(move.xx[last], last)
-          jumpReverse(shadow, hint, des)
+        getDests(shadow, hint).forEach(destination => {
+          const solution = `${move.solution}  ${hint}>${destination}`
+          const child = new Tree(solution, depth)
+          const lastIndex = move.children.push(child) - 1
+          jumpOver(shadow, hint, destination)
+          depth = depth + 1
+
+          if (depth == MAX_DEPTH) {
+            solutions.push(solution)
+          }
+          recurse(move.children[lastIndex])
+          depth = depth - 1
+          jumpReverse(shadow, hint, destination)
         })
       })
     }
 
-    recurse(moves)
-    console.log(moves)
-
+    // recurse(moves)
+    // console.log(solutions)
   })
 </script>
 
@@ -299,12 +322,21 @@
     padding: 15px;
   }
 
+  span {
+    display: none;
+  }
+
   .restart {
+    display: inline;
     cursor: pointer;
   }
 
-  .playing {
-    visibility: hidden;
+  .gameover {
+    display: inline;
+  }
+
+  .victory {
+    display: inline;
   }
 
   .bold {
@@ -315,7 +347,8 @@
 <main>
   <div>
     <span class="restart" class:bold on:click={restart}>RESTART GAME</span>
-    <span data-cy="game-over" class:playing> | GAME OVER</span>
+    <span data-cy="game-over" class:gameover> | GAME OVER</span>
+    <span data-cy="victory" class:victory> | VICTORY</span>
   </div>
   <div class="triangle">
     {#each circles as _, i}
