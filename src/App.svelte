@@ -77,17 +77,26 @@
     jumps.addEdge(11, 14)
   }
 
-  const commonBetween = (a, b) =>
-    adjcs.adjacencyList[a].filter(common =>
-      adjcs.adjacencyList[b].includes(common)
-    )[0]
+  const commonBetween = (source, destination) => {
+    const common = adjcs.adjacencyList[source].filter(common =>
+      adjcs.adjacencyList[destination].includes(common)
+    )
+
+    if (common.length != 1) {
+      throw new Error(
+        `Jump from ${source} to ${destination} cannot be performed`
+      )
+    }
+
+    return common
+  }
 
   const clearDests = () =>
     circles.forEach(
       (_, i) => (circles[i] = circles[i] == dest ? hole : circles[i])
     )
 
-  const getDests = curr => {
+  const getDests = (circles, curr) => {
     let dests = []
 
     jumps.adjacencyList[curr].forEach(jump => {
@@ -101,11 +110,39 @@
     return dests
   }
 
+  const getHints = circles => {
+    let hints = []
+    circles.forEach((circle, i) => {
+      if (circle == pole) {
+        const dests = getDests(circles, i)
+        if (dests.length > 0) {
+          hints.push(i)
+        }
+      }
+    })
+
+    return hints
+  }
+
+  const jumpReverse = (circles, source, destination) => {
+    const jumpedOver = commonBetween(source, destination)
+    circles[source] = pole
+    circles[jumpedOver] = pole
+    circles[destination] = hole
+  }
+
+  const jumpOver = (circles, source, destination) => {
+    const jumpedOver = commonBetween(source, destination)
+    circles[source] = hole
+    circles[jumpedOver] = hole
+    circles[destination] = pole
+  }
+
   const change = curr => {
     const prev = circles.indexOf(pick)
 
     if (circles[curr] == pole && prev == -1) {
-      let dests = getDests(curr)
+      let dests = getDests(circles, curr)
       dests.forEach(d => (circles[d] = dest))
 
       if (dests.length > 0) {
@@ -116,22 +153,10 @@
     }
 
     if (circles[curr] == dest) {
-      const jumpedOver = commonBetween(curr, prev)
-      circles[curr] = pole
-      circles[prev] = hole
-      circles[jumpedOver] = hole
+      jumpOver(circles, prev, curr)
       clearDests()
 
-      let hints = []
-      circles.forEach((circle, i) => {
-        if (circle == pole) {
-          const dests = getDests(i)
-          if (dests.length > 0) {
-            hints.push(i)
-          }
-        }
-      })
-
+      const hints = getHints(circles)
       if (hints.length == 0) {
         playing = false
         bold = true
@@ -146,7 +171,41 @@
     }
   }
 
-  onMount(() => restart())
+  class TT {
+    constructor(src, des) {
+      this.SRC = src
+      this.DES = des
+      this.xx = []
+    }
+  }
+
+  onMount(() => {
+    restart()
+    let shadow = [...circles]
+
+    const start = 0
+    const moves = new TT(start, undefined)
+
+    const recurse = move => {
+      const hints = getHints(shadow)
+      if (hints.length == 0) {
+        return
+      }
+
+      hints.forEach(hint => {
+        getDests(shadow, hint).forEach(des => {
+          const last = move.xx.push(new TT(hint, des)) - 1
+          jumpOver(shadow, hint, des)
+          recurse(move.xx[last], last)
+          jumpReverse(shadow, hint, des)
+        })
+      })
+    }
+
+    recurse(moves)
+    console.log(moves)
+
+  })
 </script>
 
 <style>
@@ -265,28 +324,36 @@
           in:receive={{ key: i }}
           out:send={{ key: i }}
           class="circle div{i} hole"
-          on:click={() => change(i)} />
+          on:click={() => change(i)}>
+          {i}
+        </div>
       {/if}
       {#if circles[i] == pole}
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
           class="circle div{i} pole"
-          on:click={() => change(i)} />
+          on:click={() => change(i)}>
+          {i}
+        </div>
       {/if}
       {#if circles[i] == pick}
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
           class="circle div{i} pick"
-          on:click={() => change(i)} />
+          on:click={() => change(i)}>
+          {i}
+        </div>
       {/if}
       {#if circles[i] == dest}
         <div
           in:receive={{ key: i }}
           out:send={{ key: i }}
           class="circle div{i} dest"
-          on:click={() => change(i)} />
+          on:click={() => change(i)}>
+          {i}
+        </div>
       {/if}
     {/each}
   </div>
