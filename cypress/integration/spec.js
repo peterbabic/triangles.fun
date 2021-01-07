@@ -17,7 +17,7 @@ describe("game should", () => {
 
   it("display game over", () => {
     cy.visit("/")
-    cy.get("[data-cy=game-over]").as("game-over").should("not.be.visible")
+    cy.get("[data-cy=gameover]").as("gameover").should("not.be.visible")
 
     cy.get(".div2.pole").click()
     cy.get(".div0.dest").click()
@@ -43,13 +43,14 @@ describe("game should", () => {
     cy.get(".div14.pole").click()
     cy.get(".div11.dest").click()
 
-    cy.get("@game-over").should("be.be.visible")
+    cy.get("@gameover").should("be.be.visible")
   })
 
   it("display victory", () => {
     cy.visit("/")
     cy.get("[data-cy=victory]").as("victory").should("not.be.visible")
 
+    // 2>0  11>2  3>1  9>2  0>9  13>8  14>11  1>3  5>12  12>7  4>2  2>9  8>13
     cy.get(".div2.pole").click()
     cy.get(".div0.dest").click()
     cy.get(".div11.pole").click()
@@ -79,6 +80,4 @@ describe("game should", () => {
 
     cy.get("@victory").should("be.visible")
   })
-
-  // 2>0  11>2  3>1  9>2  0>9  13>8  14>11  1>3  5>12  12>7  4>2  2>9  8>13
 })
