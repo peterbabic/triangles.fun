@@ -8,7 +8,13 @@
     fallback: scale,
   })
 
-  const C_MAX_STEPS = 13
+  // 6/2 circles = 3 steps
+  // 10/2 circles = 7 steps
+  // 15/1 circles = 13 steps
+  // 21/1 circles = 19 steps
+  // 28/1 circles = ?? steps
+  const C_NUM_CIRCLES = 21
+  const C_MAX_STEPS = 19
   const C_POLE = 0
   const C_HOLE = 1
   const C_PICK = 2
@@ -21,7 +27,11 @@
   let gameover
   let victory
 
-  onMount(() => restart())
+  onMount(() => {
+    restart()
+    printSingleSolution()
+  })
+
   const restart = () => {
     adjcs = new Graph()
     jumps = new Graph()
@@ -31,54 +41,52 @@
     gameover = false
     victory = false
 
-    const numCircles = 15
-    for (let i = 0; i < numCircles; i++) {
-      circles[i] = C_POLE
+    for (let i = 0; i < C_NUM_CIRCLES; i++) {
       adjcs.addVertex(i)
       jumps.addVertex(i)
-
-      if (i > 0) {
-        adjcs.addEdge(i, i - 1)
-      }
+      circles[i] = C_POLE
     }
 
     circles[0] = C_HOLE
 
-    adjcs.addEdge(0, 8)
-    adjcs.addEdge(1, 7)
-    adjcs.addEdge(1, 8)
-    adjcs.addEdge(2, 6)
-    adjcs.addEdge(2, 7)
-    adjcs.addEdge(3, 5)
-    adjcs.addEdge(3, 6)
-    adjcs.addEdge(5, 11)
-    adjcs.addEdge(6, 10)
-    adjcs.addEdge(6, 11)
-    adjcs.addEdge(7, 9)
-    adjcs.addEdge(7, 10)
-    adjcs.addEdge(9, 13)
-    adjcs.addEdge(10, 12)
-    adjcs.addEdge(10, 13)
-    adjcs.addEdge(12, 14)
+    let row = 0
+    let col = 0
+    for (let i = 0; i < C_NUM_CIRCLES; i++, col++) {
+      const triangular = n => (n <= 1 ? 1 : n + triangular(n - 1))
+      const leftMost = detph => (detph == 0 ? 0 : triangular(detph))
+      const find = (r, c) => (c > r ? undefined : leftMost(r) + c)
+      // const triangular2 = n => (n <= 1 ? 0 : n + triangular2(n - 1))
+      // const rightMost = detph => (detph == 0 ? 0 : triangular2(detph + 1))
+      const addEdge = (graph, i, pos) => {
+        if (pos != undefined && pos < C_NUM_CIRCLES) {
+          graph.addEdge(i, pos)
+        }
+      }
 
-    jumps.addEdge(0, 2)
-    jumps.addEdge(0, 9)
-    jumps.addEdge(1, 3)
-    jumps.addEdge(1, 10)
-    jumps.addEdge(2, 4)
-    jumps.addEdge(2, 9)
-    jumps.addEdge(2, 11)
-    jumps.addEdge(3, 10)
-    jumps.addEdge(4, 11)
-    jumps.addEdge(5, 7)
-    jumps.addEdge(5, 12)
-    jumps.addEdge(6, 8)
-    jumps.addEdge(6, 13)
-    jumps.addEdge(7, 12)
-    jumps.addEdge(8, 13)
-    jumps.addEdge(9, 11)
-    jumps.addEdge(9, 14)
-    jumps.addEdge(11, 14)
+      if (i >= leftMost(row + 1)) {
+        row++
+      }
+
+      if (i == leftMost(row)) {
+        col = 0
+      }
+
+      let east = find(row, col + 1)
+      let south = find(row + 1, col)
+      let southEast = find(row + 1, col + 1)
+
+      addEdge(adjcs, i, east)
+      addEdge(adjcs, i, south)
+      addEdge(adjcs, i, southEast)
+
+      east = find(row, col + 2)
+      south = find(row + 2, col)
+      southEast = find(row + 2, col + 2)
+
+      addEdge(jumps, i, east)
+      addEdge(jumps, i, south)
+      addEdge(jumps, i, southEast)
+    }
   }
 
   const commonBetween = (source, destination) => {
@@ -190,13 +198,17 @@
     }
   }
 
-  const printSolutions = () => {
+  const printSingleSolution = () => {
     let depth = 0
     let solutions = []
     let shadow = [...circles]
     const moves = new Tree("", depth)
 
     const recurse = move => {
+      if (solutions.length > 0) {
+        return
+      }
+
       const hints = getHints(shadow)
       if (hints.length == 0) {
         return
@@ -227,57 +239,96 @@
 
 <style>
   .div0 {
-    grid-area: 5 / 1 / 6 / 2;
+    grid-area: 1 / 7 / 2 / 8;
   }
   .div1 {
-    grid-area: 5 / 3 / 6 / 4;
-  }
-  .div2 {
-    grid-area: 5 / 5 / 6 / 6;
-  }
-  .div3 {
-    grid-area: 5 / 7 / 6 / 8;
-  }
-  .div4 {
-    grid-area: 5 / 9 / 6 / 10;
-  }
-  .div5 {
-    grid-area: 4 / 8 / 5 / 9;
-  }
-  .div6 {
-    grid-area: 4 / 6 / 5 / 7;
-  }
-  .div7 {
-    grid-area: 4 / 4 / 5 / 5;
-  }
-  .div8 {
-    grid-area: 4 / 2 / 5 / 3;
-  }
-  .div9 {
-    grid-area: 3 / 3 / 4 / 4;
-  }
-  .div10 {
-    grid-area: 3 / 5 / 4 / 6;
-  }
-  .div11 {
-    grid-area: 3 / 7 / 4 / 8;
-  }
-  .div12 {
     grid-area: 2 / 6 / 3 / 7;
   }
+  .div2 {
+    grid-area: 2 / 8 / 3 / 9;
+  }
+  .div3 {
+    grid-area: 3 / 5 / 4 / 6;
+  }
+  .div4 {
+    grid-area: 3 / 7 / 4 / 8;
+  }
+  .div5 {
+    grid-area: 3 / 9 / 4 / 10;
+  }
+  .div6 {
+    grid-area: 4 / 4 / 5 / 5;
+  }
+  .div7 {
+    grid-area: 4 / 6 / 5 / 7;
+  }
+  .div8 {
+    grid-area: 4 / 8 / 5 / 9;
+  }
+  .div9 {
+    grid-area: 4 / 10 / 5 / 11;
+  }
+  .div10 {
+    grid-area: 5 / 3 / 6 / 4;
+  }
+  .div11 {
+    grid-area: 5 / 5 / 6 / 6;
+  }
+  .div12 {
+    grid-area: 5 / 7 / 6 / 8;
+  }
   .div13 {
-    grid-area: 2 / 4 / 3 / 5;
+    grid-area: 5 / 9 / 6 / 10;
   }
   .div14 {
-    grid-area: 1 / 5 / 2 / 6;
+    grid-area: 5 / 11 / 6 / 12;
+  }
+  .div15 {
+    grid-area: 6 / 2 / 7 / 3;
+  }
+  .div16 {
+    grid-area: 6 / 4 / 7 / 5;
+  }
+  .div17 {
+    grid-area: 6 / 6 / 7 / 7;
+  }
+  .div18 {
+    grid-area: 6 / 8 / 7 / 9;
+  }
+  .div19 {
+    grid-area: 6 / 10 / 7 / 11;
+  }
+  .div20 {
+    grid-area: 6 / 12 / 7 / 13;
+  }
+  .div21 {
+    grid-area: 7 / 1 / 8 / 2;
+  }
+  .div22 {
+    grid-area: 7 / 3 / 8 / 4;
+  }
+  .div23 {
+    grid-area: 7 / 5 / 8 / 6;
+  }
+  .div24 {
+    grid-area: 7 / 7 / 8 / 8;
+  }
+  .div25 {
+    grid-area: 7 / 9 / 8 / 10;
+  }
+  .div26 {
+    grid-area: 7 / 11 / 8 / 12;
+  }
+  .div27 {
+    grid-area: 7 / 13 / 8 / 14;
   }
 
   .triangle {
     width: 600px;
     height: 520px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(13, 1fr);
+    grid-template-rows: repeat(7, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
   }
