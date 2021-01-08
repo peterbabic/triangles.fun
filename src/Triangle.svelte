@@ -1,5 +1,63 @@
+<script context="module">
+  import Tree from "./Tree"
+  import Graph from "./Graph"
+
+  const adjcs = new Graph()
+  const jumps = new Graph()
+
+  // 6/2 circles = 3 steps
+  // 10/2 circles = 7 steps
+  // 15/1 circles = 13 steps
+  // 21/1 circles = 19 steps
+  // 28/1 circles = ?? steps
+  const C_MAX_CIRCLES = 21
+  const C_POLE = 0
+  const C_HOLE = 1
+  const C_PICK = 2
+  const C_DEST = 3
+
+  const triangular = n => (n <= 1 ? 1 : n + triangular(n - 1))
+  const leftMost = detph => (detph == 0 ? 0 : triangular(detph))
+  const find = (r, c) => (c > r ? undefined : leftMost(r) + c)
+
+  let row = 0
+  let col = 0
+  for (let i = 0; i < C_MAX_CIRCLES; i++, col++) {
+    const addEdge = (graph, i, pos) => {
+      if (pos != undefined && pos < C_MAX_CIRCLES) {
+        graph.addVertex(i)
+        graph.addVertex(pos)
+        graph.addEdge(i, pos)
+      }
+    }
+
+    if (i >= leftMost(row + 1)) {
+      row++
+    }
+
+    if (i == leftMost(row)) {
+      col = 0
+    }
+
+    let east = find(row, col + 1)
+    let south = find(row + 1, col)
+    let southEast = find(row + 1, col + 1)
+
+    addEdge(adjcs, i, east)
+    addEdge(adjcs, i, south)
+    addEdge(adjcs, i, southEast)
+
+    east = find(row, col + 2)
+    south = find(row + 2, col)
+    southEast = find(row + 2, col + 2)
+
+    addEdge(jumps, i, east)
+    addEdge(jumps, i, south)
+    addEdge(jumps, i, southEast)
+  }
+</script>
+
 <script>
-  import Graph from "./Graph.js"
   import { onMount } from "svelte"
   import { crossfade, scale } from "svelte/transition"
 
@@ -8,22 +66,13 @@
     fallback: scale,
   })
 
-  // 6/2 circles = 3 steps
-  // 10/2 circles = 7 steps
-  // 15/1 circles = 13 steps
-  // 21/1 circles = 19 steps
-  // 28/1 circles = ?? steps
-  const C_NUM_CIRCLES = 21
-  const C_MAX_STEPS = 19
-  const C_POLE = 0
-  const C_HOLE = 1
-  const C_PICK = 2
-  const C_DEST = 3
+  export let side = 5
+
+  const numCircles = leftMost(parseInt(side))
+  const maxSteps = numCircles - 2
 
   let circles = []
   let steps = 0
-  let adjcs
-  let jumps
   let gameover
   let victory
 
@@ -33,60 +82,16 @@
   })
 
   const restart = () => {
-    adjcs = new Graph()
-    jumps = new Graph()
-
     circles = []
     steps = 0
     gameover = false
     victory = false
 
-    for (let i = 0; i < C_NUM_CIRCLES; i++) {
-      adjcs.addVertex(i)
-      jumps.addVertex(i)
+    for (let i = 0; i < numCircles; i++) {
       circles[i] = C_POLE
     }
 
     circles[0] = C_HOLE
-
-    let row = 0
-    let col = 0
-    for (let i = 0; i < C_NUM_CIRCLES; i++, col++) {
-      const triangular = n => (n <= 1 ? 1 : n + triangular(n - 1))
-      const leftMost = detph => (detph == 0 ? 0 : triangular(detph))
-      const find = (r, c) => (c > r ? undefined : leftMost(r) + c)
-      // const triangular2 = n => (n <= 1 ? 0 : n + triangular2(n - 1))
-      // const rightMost = detph => (detph == 0 ? 0 : triangular2(detph + 1))
-      const addEdge = (graph, i, pos) => {
-        if (pos != undefined && pos < C_NUM_CIRCLES) {
-          graph.addEdge(i, pos)
-        }
-      }
-
-      if (i >= leftMost(row + 1)) {
-        row++
-      }
-
-      if (i == leftMost(row)) {
-        col = 0
-      }
-
-      let east = find(row, col + 1)
-      let south = find(row + 1, col)
-      let southEast = find(row + 1, col + 1)
-
-      addEdge(adjcs, i, east)
-      addEdge(adjcs, i, south)
-      addEdge(adjcs, i, southEast)
-
-      east = find(row, col + 2)
-      south = find(row + 2, col)
-      southEast = find(row + 2, col + 2)
-
-      addEdge(jumps, i, east)
-      addEdge(jumps, i, south)
-      addEdge(jumps, i, southEast)
-    }
   }
 
   const commonBetween = (source, destination) => {
@@ -104,9 +109,7 @@
   }
 
   const clearDests = () =>
-    circles.forEach(
-      (_, i) => (circles[i] = circles[i] == C_DEST ? C_HOLE : circles[i])
-    )
+    (circles = circles.map(c => (c == C_DEST ? C_HOLE : c)))
 
   const getDests = (circles, curr) => {
     let dests = []
@@ -169,7 +172,7 @@
       clearDests()
       steps++
 
-      if (steps == C_MAX_STEPS) {
+      if (steps == maxSteps) {
         victory = true
 
         return
@@ -187,14 +190,6 @@
     if (circles[curr] == C_PICK) {
       circles[curr] = C_POLE
       clearDests()
-    }
-  }
-
-  class Tree {
-    constructor(solution, depth) {
-      this.depth = depth
-      this.solution = solution
-      this.children = []
     }
   }
 
@@ -222,7 +217,7 @@
           jumpOver(shadow, hint, destination)
           depth = depth + 1
 
-          if (depth == C_MAX_STEPS) {
+          if (depth == maxSteps) {
             solutions.push(solution)
           }
           recurse(move.children[lastIndex])
