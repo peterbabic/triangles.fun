@@ -3,5 +3,5 @@
 </script>
 
 <main>
-  <Triangle />
+  <Triangle side="5" />
 </main>
