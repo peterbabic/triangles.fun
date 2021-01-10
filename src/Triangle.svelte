@@ -67,8 +67,9 @@
   let victory
   let maxSteps
 
+  const duration = 400
   const [send, receive] = crossfade({
-    duration: 400,
+    duration,
     fallback: scale,
   })
 
@@ -119,6 +120,8 @@
       jumpReverse(circles, dest, src)
       victory = false
       gameover = false
+
+      setTimeout(() => (circleColors = circleColors), duration)
     }
   }
 
