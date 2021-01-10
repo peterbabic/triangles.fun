@@ -62,7 +62,7 @@
 
   let circles = []
   let circleColors = []
-  let steps = 0
+  let moveStack = []
   let gameover
   let victory
   let maxSteps
@@ -83,7 +83,7 @@
   const restart = () => {
     circles = []
     circleColors = []
-    steps = 0
+    moveStack = []
     gameover = false
     victory = false
 
@@ -110,6 +110,16 @@
     }
 
     // printSolutions(1)
+  }
+
+  const undo = () => {
+    if (moveStack.length > 0) {
+      const [src, dest, color] = moveStack.pop()
+      circleColors[src] = color
+      jumpReverse(circles, dest, src)
+      victory = false
+      gameover = false
+    }
   }
 
   const getColor = i => colors[i % colors.length]
@@ -191,10 +201,11 @@
     if (circles[curr] == C_DEST) {
       jumpOver(circles, prev, curr)
       clearDests()
+      const destColor = circleColors[curr]
       circleColors[curr] = circleColors[prev]
-      steps++
+      moveStack.push([curr, prev, destColor])
 
-      if (steps == maxSteps) {
+      if (moveStack.length == maxSteps) {
         victory = true
 
         return
@@ -427,21 +438,20 @@
     display: none;
   }
 
-  .restart {
+  .restart,
+  .undo {
     display: inline;
     cursor: pointer;
   }
 
-  .gameover {
-    display: inline;
-  }
-
+  .gameover,
   .victory {
     display: inline;
   }
 </style>
 
 <span class="restart" on:click={restart}>RESTART GAME</span>
+<span class="undo" on:click={undo}> | UNDO</span>
 <span data-cy="gameover" class:gameover> | GAME OVER</span>
 <span data-cy="victory" class:victory> | VICTORY</span>
 
