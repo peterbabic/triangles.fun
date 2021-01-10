@@ -58,28 +58,31 @@
 </script>
 
 <script>
+  import { levels } from "./levels.js"
   import { onMount } from "svelte"
   import { crossfade, scale } from "svelte/transition"
+
+  export let side = 5
+  export let variant = 0
+
+  let circles = []
+  let steps = 0
+  let gameover
+  let victory
+  let maxSteps
 
   const [send, receive] = crossfade({
     duration: 400,
     fallback: scale,
   })
 
-  export let side = 5
-
-  const numCircles = leftMost(parseInt(side))
-  const maxSteps = numCircles - 2
-
-  let circles = []
-  let steps = 0
-  let gameover
-  let victory
-
   onMount(() => {
     restart()
-    printSingleSolution()
+    // printSolutions(1)
   })
+  $: if (variant || side) {
+    restart()
+  }
 
   const restart = () => {
     circles = []
@@ -87,11 +90,20 @@
     gameover = false
     victory = false
 
+    const numCircles = leftMost(side)
+
     for (let i = 0; i < numCircles; i++) {
       circles[i] = C_POLE
     }
 
-    circles[0] = C_HOLE
+    const currentVariant = levels.find(
+      v => v.side == side && v.variant == variant
+    )
+
+    currentVariant.holes.forEach(hole => (circles[hole] = C_HOLE))
+    const numHoles = circles.filter(c => c == C_HOLE).length
+
+    maxSteps = numCircles - (numHoles + 1)
   }
 
   const commonBetween = (source, destination) => {
@@ -193,19 +205,26 @@
     }
   }
 
-  const printSingleSolution = () => {
+  const printSolutions = maxSolutionCount => {
     let depth = 0
     let solutions = []
+    let gameovers = []
     let shadow = [...circles]
     const moves = new Tree("", depth)
 
     const recurse = move => {
-      if (solutions.length > 0) {
+      if (
+        maxSolutionCount != 0 &&
+        maxSolutionCount != undefined &&
+        maxSolutionCount <= solutions.length
+      ) {
         return
       }
 
       const hints = getHints(shadow)
       if (hints.length == 0) {
+        gameovers.push(move.solution)
+
         return
       }
 
@@ -229,6 +248,13 @@
 
     recurse(moves)
     console.log(solutions)
+
+    if (maxSolutionCount < 1) {
+      console.log(gameovers)
+
+      const proportion = (solutions.length * 100) / gameovers.length
+      console.log(proportion.toFixed(2) + "% moves are victory")
+    }
   }
 </script>
 
