@@ -2,20 +2,24 @@
   import Triangle from "./Triangle.svelte"
   import { levels } from "./levels.js"
 
-  let level = 0
+  let level = 10
   $: variant = levels[level].variant
   $: side = levels[level].side
 
   const changeLevel = event => {
     level = event.target.value
   }
-
-  $: console.log(level)
 </script>
 
 <style>
   button {
     margin-right: 10px;
+  }
+
+  :global(body) {
+    background-color: #eceff4;
+    margin: 0;
+    padding: 15px;
   }
 </style>
 

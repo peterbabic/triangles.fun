@@ -11,3 +11,13 @@ export const levels = [
   { side: 5, variant: 5, holes: [1] }, // 294543 / 14880 (5.05%)
   { side: 5, variant: 6, holes: [4] }, // 137864 / 1550 (1.12%)
 ]
+
+export const colors = [
+  "yellow",
+  "red",
+  "blue",
+  "orange",
+  "purple",
+  "green",
+  // "cyan",
+]

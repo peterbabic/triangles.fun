@@ -5,11 +5,6 @@
   const adjcs = new Graph()
   const jumps = new Graph()
 
-  // 6/2 circles = 3 steps
-  // 10/2 circles = 7 steps
-  // 15/1 circles = 13 steps
-  // 21/1 circles = 19 steps
-  // 28/1 circles = ?? steps
   const C_MAX_CIRCLES = 21
   const C_POLE = 0
   const C_HOLE = 1
@@ -58,7 +53,7 @@
 </script>
 
 <script>
-  import { levels } from "./levels.js"
+  import { levels, colors } from "./levels.js"
   import { onMount } from "svelte"
   import { crossfade, scale } from "svelte/transition"
 
@@ -66,6 +61,7 @@
   export let variant = 0
 
   let circles = []
+  let circleColors = []
   let steps = 0
   let gameover
   let victory
@@ -78,14 +74,15 @@
 
   onMount(() => {
     restart()
-    // printSolutions(1)
   })
+
   $: if (variant || side) {
     restart()
   }
 
   const restart = () => {
     circles = []
+    circleColors = []
     steps = 0
     gameover = false
     victory = false
@@ -102,9 +99,21 @@
 
     currentVariant.holes.forEach(hole => (circles[hole] = C_HOLE))
     const numHoles = circles.filter(c => c == C_HOLE).length
-
     maxSteps = numCircles - (numHoles + 1)
+
+    for (let i = 0, j = 0; i < numCircles; i++) {
+      circleColors[i] = getColor(j)
+
+      if (circles[i] != C_HOLE) {
+        j++
+      }
+    }
+
+    // printSolutions(1)
   }
+
+  const getColor = i => colors[i % colors.length]
+  const getDestColor = _ => circleColors[circles.indexOf(C_PICK)]
 
   const commonBetween = (source, destination) => {
     const common = adjcs.adjacencyList[source].filter(common =>
@@ -182,6 +191,7 @@
     if (circles[curr] == C_DEST) {
       jumpOver(circles, prev, curr)
       clearDests()
+      circleColors[curr] = circleColors[prev]
       steps++
 
       if (steps == maxSteps) {
@@ -260,96 +270,57 @@
 
 <style>
   .div0 {
-    grid-area: 1 / 7 / 2 / 8;
+    grid-area: 1 / 5 / 2 / 6;
   }
   .div1 {
-    grid-area: 2 / 6 / 3 / 7;
+    grid-area: 2 / 4 / 3 / 5;
   }
   .div2 {
-    grid-area: 2 / 8 / 3 / 9;
+    grid-area: 2 / 6 / 3 / 7;
   }
   .div3 {
-    grid-area: 3 / 5 / 4 / 6;
+    grid-area: 3 / 3 / 4 / 4;
   }
   .div4 {
-    grid-area: 3 / 7 / 4 / 8;
+    grid-area: 3 / 5 / 4 / 6;
   }
   .div5 {
-    grid-area: 3 / 9 / 4 / 10;
+    grid-area: 3 / 7 / 4 / 8;
   }
   .div6 {
-    grid-area: 4 / 4 / 5 / 5;
+    grid-area: 4 / 2 / 5 / 3;
   }
   .div7 {
-    grid-area: 4 / 6 / 5 / 7;
+    grid-area: 4 / 4 / 5 / 5;
   }
   .div8 {
-    grid-area: 4 / 8 / 5 / 9;
+    grid-area: 4 / 6 / 5 / 7;
   }
   .div9 {
-    grid-area: 4 / 10 / 5 / 11;
+    grid-area: 4 / 8 / 5 / 9;
   }
   .div10 {
-    grid-area: 5 / 3 / 6 / 4;
+    grid-area: 5 / 1 / 6 / 2;
   }
   .div11 {
-    grid-area: 5 / 5 / 6 / 6;
+    grid-area: 5 / 3 / 6 / 4;
   }
   .div12 {
-    grid-area: 5 / 7 / 6 / 8;
+    grid-area: 5 / 5 / 6 / 6;
   }
   .div13 {
-    grid-area: 5 / 9 / 6 / 10;
+    grid-area: 5 / 7 / 6 / 8;
   }
   .div14 {
-    grid-area: 5 / 11 / 6 / 12;
-  }
-  .div15 {
-    grid-area: 6 / 2 / 7 / 3;
-  }
-  .div16 {
-    grid-area: 6 / 4 / 7 / 5;
-  }
-  .div17 {
-    grid-area: 6 / 6 / 7 / 7;
-  }
-  .div18 {
-    grid-area: 6 / 8 / 7 / 9;
-  }
-  .div19 {
-    grid-area: 6 / 10 / 7 / 11;
-  }
-  .div20 {
-    grid-area: 6 / 12 / 7 / 13;
-  }
-  .div21 {
-    grid-area: 7 / 1 / 8 / 2;
-  }
-  .div22 {
-    grid-area: 7 / 3 / 8 / 4;
-  }
-  .div23 {
-    grid-area: 7 / 5 / 8 / 6;
-  }
-  .div24 {
-    grid-area: 7 / 7 / 8 / 8;
-  }
-  .div25 {
-    grid-area: 7 / 9 / 8 / 10;
-  }
-  .div26 {
-    grid-area: 7 / 11 / 8 / 12;
-  }
-  .div27 {
-    grid-area: 7 / 13 / 8 / 14;
+    grid-area: 5 / 9 / 6 / 10;
   }
 
   .triangle {
-    width: 600px;
-    height: 520px;
+    width: 320px;
+    height: 370px;
     display: grid;
-    grid-template-columns: repeat(13, 1fr);
-    grid-template-rows: repeat(7, 1fr);
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
   }
@@ -360,11 +331,7 @@
     clip-path: circle();
     text-align: center;
     color: white;
-  }
-
-  .pole {
     cursor: pointer;
-    background-color: #8fbcbb;
   }
 
   .hole {
@@ -372,19 +339,88 @@
     background-color: #d8dee9;
   }
 
-  .pick {
-    cursor: pointer;
-    background-color: #a3be8c;
+  .green {
+    background-color: hsl(92, 28%, 65%);
   }
 
-  .dest {
-    cursor: pointer;
-    background-color: #81a1c1;
+  .green-lighter {
+    background-color: hsl(92, 28%, 85%);
   }
-  :global(body) {
-    background-color: #eceff4;
-    margin: 0;
-    padding: 15px;
+
+  .green-darker {
+    background-color: hsl(92, 28%, 30%);
+  }
+
+  .cyan {
+    background-color: hsl(179, 25%, 65%);
+  }
+
+  .cyan-lighter {
+    background-color: hsl(179, 25%, 85%);
+  }
+
+  .cyan-darker {
+    background-color: hsl(179, 25%, 30%);
+  }
+
+  .blue {
+    background-color: hsl(210, 34%, 63%);
+  }
+
+  .blue-lighter {
+    background-color: hsl(213, 32%, 82%);
+  }
+
+  .blue-darker {
+    background-color: hsl(213, 32%, 37%);
+  }
+
+  .yellow {
+    background-color: hsl(40, 71%, 73%);
+  }
+
+  .yellow-lighter {
+    background-color: hsl(40, 71%, 88%);
+  }
+
+  .yellow-darker {
+    background-color: hsl(40, 71%, 37%);
+  }
+
+  .orange {
+    background-color: hsl(14, 51%, 63%);
+  }
+
+  .orange-lighter {
+    background-color: hsl(14, 51%, 83%);
+  }
+
+  .orange-darker {
+    background-color: hsl(14, 51%, 28%);
+  }
+
+  .red {
+    background-color: hsl(354, 42%, 56%);
+  }
+
+  .red-lighter {
+    background-color: hsl(354, 42%, 76%);
+  }
+
+  .red-darker {
+    background-color: hsl(354, 42%, 28%);
+  }
+
+  .purple {
+    background-color: hsl(311, 20%, 63%);
+  }
+
+  .purple-lighter {
+    background-color: hsl(311, 20%, 83%);
+  }
+
+  .purple-darker {
+    background-color: hsl(311, 20%, 28%);
   }
 
   span {
@@ -424,7 +460,7 @@
       <div
         in:receive={{ key: i }}
         out:send={{ key: i }}
-        class="circle div{i} pole"
+        class="circle div{i} {circleColors[i]}"
         on:click={() => change(i)}>
         {i}
       </div>
@@ -433,7 +469,7 @@
       <div
         in:receive={{ key: i }}
         out:send={{ key: i }}
-        class="circle div{i} pick"
+        class="circle div{i} {circleColors[i]}-lighter"
         on:click={() => change(i)}>
         {i}
       </div>
@@ -442,7 +478,7 @@
       <div
         in:receive={{ key: i }}
         out:send={{ key: i }}
-        class="circle div{i} dest"
+        class="circle div{i} {getDestColor()}-darker"
         on:click={() => change(i)}>
         {i}
       </div>
