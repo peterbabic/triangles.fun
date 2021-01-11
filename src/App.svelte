@@ -2,7 +2,7 @@
   import Triangle from "./Triangle.svelte"
   import { levels } from "./levels.js"
 
-  let level = 10
+  let level = 0
   $: variant = levels[level].variant
   $: side = levels[level].side
 
@@ -12,7 +12,8 @@
 </script>
 
 <style>
-  button {
+  .level {
+    cursor: pointer;
     margin-right: 10px;
   }
 
@@ -27,6 +28,9 @@
   <Triangle {side} {variant} />
 
   {#each levels as _, value}
-    <button on:click={changeLevel} {value}>{value}</button>
+    <button
+      class="level"
+      on:click={changeLevel}
+      {value}>{value + 1}</button>
   {/each}
 </main>

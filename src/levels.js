@@ -8,8 +8,8 @@ export const levels = [
   { side: 5, variant: 2, holes: [0, 7] }, // 157024 / 7339 (4.67%)
   { side: 5, variant: 3, holes: [3] }, // 1149568 / 85258 (7.42%)
   { side: 5, variant: 4, holes: [0] }, // 568630 / 29760 (5.23%)
-  { side: 5, variant: 5, holes: [1] }, // 294543 / 14880 (5.05%)
-  { side: 5, variant: 6, holes: [4] }, // 137864 / 1550 (1.12%)
+  // { side: 5, variant: 5, holes: [1] }, // 294543 / 14880 (5.05%)
+  { side: 5, variant: 5, holes: [4] }, // 137864 / 1550 (1.12%)
 ]
 
 export const colors = [
