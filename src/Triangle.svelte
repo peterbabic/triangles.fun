@@ -54,7 +54,6 @@
 
 <script>
   import { levels, colors } from "./levels.js"
-  import { onMount } from "svelte"
   import { crossfade, scale } from "svelte/transition"
 
   export let side = 5
@@ -71,10 +70,6 @@
   const [send, receive] = crossfade({
     duration,
     fallback: scale,
-  })
-
-  onMount(() => {
-    restart()
   })
 
   $: if (variant || side) {
@@ -110,7 +105,7 @@
       }
     }
 
-    // printSolutions(1)
+    printSolutions(1)
   }
 
   const undo = () => {
@@ -345,6 +340,11 @@
     clip-path: circle();
     text-align: center;
     color: white;
+  }
+
+  .pole,
+  .pick,
+  .dest {
     cursor: pointer;
   }
 
@@ -441,22 +441,20 @@
     display: none;
   }
 
-  .restart,
-  .undo {
-    display: inline;
-    cursor: pointer;
-  }
-
   .gameover,
   .victory {
     display: inline;
   }
+
+  button {
+    cursor: pointer;
+  }
 </style>
 
-<span class="restart" on:click={restart}>RESTART GAME</span>
-<span class="undo" on:click={undo}> | UNDO</span>
-<span data-cy="gameover" class:gameover> | GAME OVER</span>
-<span data-cy="victory" class:victory> | VICTORY</span>
+<button class="restart" on:click={restart}>RESTART GAME</button>
+<button class="undo" on:click={undo}>UNDO</button>
+<span data-cy="gameover" class:gameover>GAME OVER</span>
+<span data-cy="victory" class:victory>VICTORY</span>
 
 <div class="triangle">
   {#each circles as _, i}
@@ -473,7 +471,7 @@
       <div
         in:receive={{ key: i }}
         out:send={{ key: i }}
-        class="circle div{i} {circleColors[i]}"
+        class="circle div{i} pole {circleColors[i]}"
         on:click={() => change(i)}>
         {i}
       </div>
@@ -482,7 +480,7 @@
       <div
         in:receive={{ key: i }}
         out:send={{ key: i }}
-        class="circle div{i} {circleColors[i]}-lighter"
+        class="circle div{i} pick {circleColors[i]}-lighter"
         on:click={() => change(i)}>
         {i}
       </div>
@@ -491,7 +489,7 @@
       <div
         in:receive={{ key: i }}
         out:send={{ key: i }}
-        class="circle div{i} {getDestColor()}-darker"
+        class="circle div{i} dest {getDestColor()}-darker"
         on:click={() => change(i)}>
         {i}
       </div>
