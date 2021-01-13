@@ -1,37 +1,52 @@
 /// <reference types="cypress" />
 
 describe("game should", () => {
-  it("do undo and restart level 1", () => {
+  it("work as expected", () => {
+    cy.clearLocalStorage("completedLevels")
     cy.visit("/")
-    cy.get(".level").contains("0").click()
-    cy.get(".level").first().should("be.visible").click()
 
+    cy.log("TEST multiple dest positions")
+    cy.get(".level").contains("1").as("level1").click()
+    cy.get("[data-cy=victory]").as("victory").should("not.be.visible")
     cy.get(".div0.hole").should("be.visible")
     cy.get(".div2.pole").should("be.visible")
     cy.get(".div5.pole").should("be.visible").click()
     cy.get(".div5.pick").should("be.visible")
+    cy.get(".div3.dest").should("be.visible")
     cy.get(".div0.dest").should("be.visible").click()
+
+    cy.log("TEST jump over")
     cy.get(".div2.hole").should("be.visible")
     cy.get(".div5.hole").should("be.visible")
     cy.get(".div0.pole").should("be.visible").click()
     cy.get(".div1.pole").should("be.visible")
     cy.get(".div3.dest").should("be.visible").click()
+
+    cy.log("TEST undo")
     cy.get(".div3.pole").should("be.visible")
-    cy.get(".div0.hole").should("be.visible")
     cy.get(".div1.hole").should("be.visible")
-    cy.get(".undo").click()
-    cy.get(".div3.pole").should("be.visible")
-    cy.get(".div1.pole").should("be.visible")
     cy.get(".div0.hole").should("be.visible")
-    cy.get(".restart").click()
+    cy.get(".undo").click()
+    cy.get(".div3.hole").should("be.visible")
+    cy.get(".div1.pole").should("be.visible")
+    cy.get(".div0.pole").should("be.visible")
+
+    cy.log("TEST level 1 victory")
+    cy.get(".div0.pole").should("be.visible").click()
+    cy.get(".div3.dest").should("be.visible").click()
+    cy.get(".div4.pole").should("be.visible")
+    cy.get(".div3.pole").should("be.visible").click()
+    cy.get(".div5.dest").should("be.visible").click()
+    cy.get(".div4.hole").should("be.visible")
+    cy.get("@victory").should("be.visible")
+
+    cy.log("TEST level 1 restart")
+    cy.get(".restart").as("restart").click()
     cy.get(".div2.pole").should("be.visible")
-  })
 
-  it("lose level 7", () => {
-    cy.visit("/")
-    cy.get(".level").contains("7").click()
+    cy.log("TEST level picker")
+    cy.get(".level").contains("7").as("level7").click()
     cy.get("[data-cy=gameover]").as("gameover").should("not.be.visible")
-
     cy.get(".div3.pole").click()
     cy.get(".div0.dest").click()
     cy.get(".div5.pole").click()
@@ -40,24 +55,23 @@ describe("game should", () => {
     cy.get(".div4.dest").click()
     cy.get(".div11.pole").click()
     cy.get(".div13.dest").click()
+
+    cy.log("TEST multiple destinations present")
     cy.get(".div14.pole").click()
     cy.get(".div5.dest").should("be.visible")
     cy.get(".div12.dest").click()
+
+    cy.log("TEST gameover")
     cy.get(".div6.pole").click()
     cy.get(".div1.dest").click()
     cy.get(".div0.pole").click()
     cy.get(".div3.dest").click()
     cy.get(".div2.pole").click()
     cy.get(".div7.dest").click()
-
     cy.get("@gameover").should("be.be.visible")
-  })
 
-  it("win level 7", () => {
-    cy.visit("/")
-    cy.get("[data-cy=victory]").as("victory").should("not.be.visible")
-    cy.get(".level").contains("10").click()
-
+    cy.log("TEST level 10 victory")
+    cy.get(".level").contains("10").as("level10").click()
     cy.get(".div11.pole").click()
     cy.get(".div4.dest").click()
     cy.get(".div9.pole").click()
@@ -84,7 +98,20 @@ describe("game should", () => {
     cy.get(".div11.dest").click()
     cy.get(".div10.pole").click()
     cy.get(".div12.dest").click()
-
     cy.get("@victory").should("be.visible")
+
+    cy.log("TEST localStorage completedLevels")
+    cy.get("@level1").should("have.class", "completed")
+    cy.get("@level7").should("not.have.class", "completed")
+    cy.get("@level10").should("have.class", "completed")
+    cy.visit("/")
+    cy.get("@level1").should("have.class", "completed")
+    cy.get("@level7").should("not.have.class", "completed")
+    cy.get("@level10").should("have.class", "completed")
+    cy.get("@restart")
+      .click()
+      .should(() =>
+        expect(localStorage.getItem("completedLevels")).to.eq("[0,9]")
+      )
   })
 })

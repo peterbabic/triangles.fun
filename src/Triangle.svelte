@@ -53,6 +53,7 @@
 </script>
 
 <script>
+  import { completed } from "./store.js"
   import { levels, colors } from "./levels.js"
   import { crossfade, scale } from "svelte/transition"
 
@@ -205,6 +206,11 @@
 
       if (moveStack.length == maxSteps) {
         victory = true
+        const iLevel = levels.findIndex(
+          v => v.side == side && v.variant == variant
+        )
+
+        completed.update(arr => [...arr, iLevel])
 
         return
       }
