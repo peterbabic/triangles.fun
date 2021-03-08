@@ -331,8 +331,8 @@
   }
 
   .triangle {
-    width: 320px;
-    height: 370px;
+    width: 450px;
+    height: 250px;
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(5, 1fr);
@@ -343,20 +343,22 @@
   .circle {
     width: 50px;
     height: 50px;
-    clip-path: circle();
-    text-align: center;
-    color: white;
+    @apply rounded-full;
   }
 
   .pole,
   .pick,
   .dest {
-    cursor: pointer;
+    @apply cursor-pointer;
+  }
+
+  button {
+    @apply cursor-pointer;
   }
 
   .hole {
-    cursor: default;
-    background-color: #d8dee9;
+    background-color: hsl(219, 28%, 88%);
+    @apply shadow-inner;
   }
 
   .green {
@@ -470,7 +472,7 @@
         out:send={{ key: i }}
         class="circle div{i} hole"
         on:click={() => change(i)}>
-        {i}
+        <!-- {i} -->
       </div>
     {/if}
     {#if circles[i] == C_POLE}
@@ -479,7 +481,7 @@
         out:send={{ key: i }}
         class="circle div{i} pole {circleColors[i]}"
         on:click={() => change(i)}>
-        {i}
+        <!-- {i} -->
       </div>
     {/if}
     {#if circles[i] == C_PICK}
@@ -488,7 +490,7 @@
         out:send={{ key: i }}
         class="circle div{i} pick {circleColors[i]}-lighter"
         on:click={() => change(i)}>
-        {i}
+        <!-- {i} -->
       </div>
     {/if}
     {#if circles[i] == C_DEST}
@@ -497,7 +499,7 @@
         out:send={{ key: i }}
         class="circle div{i} dest {getDestColor()}-darker"
         on:click={() => change(i)}>
-        {i}
+        <!-- {i} -->
       </div>
     {/if}
   {/each}

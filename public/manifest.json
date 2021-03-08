@@ -5,7 +5,7 @@
   "description": "Eliminate all the circles in the triangle by jumping them over",
   "theme_color": "#bf616a",
   "background_color": "#eceff4",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
