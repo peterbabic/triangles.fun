@@ -1,4 +1,5 @@
 <script>
+  import Tailwind from "./Components/Tailwind.svelte"
   import Triangle from "./Triangle.svelte"
   import { levels } from "./levels.js"
   import { completed } from "./store.js"
@@ -35,6 +36,8 @@
     padding: 15px;
   }
 </style>
+
+<Tailwind />
 
 <main>
   <Triangle {side} {variant} />
