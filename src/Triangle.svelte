@@ -284,72 +284,89 @@
 </script>
 
 <style>
-  .div0 {
-    grid-area: 1 / 5 / 2 / 6;
-  }
-  .div1 {
-    grid-area: 2 / 4 / 3 / 5;
-  }
-  .div2 {
-    grid-area: 2 / 6 / 3 / 7;
-  }
-  .div3 {
-    grid-area: 3 / 3 / 4 / 4;
-  }
-  .div4 {
-    grid-area: 3 / 5 / 4 / 6;
-  }
-  .div5 {
-    grid-area: 3 / 7 / 4 / 8;
-  }
-  .div6 {
-    grid-area: 4 / 2 / 5 / 3;
-  }
-  .div7 {
-    grid-area: 4 / 4 / 5 / 5;
-  }
-  .div8 {
-    grid-area: 4 / 6 / 5 / 7;
-  }
-  .div9 {
-    grid-area: 4 / 8 / 5 / 9;
-  }
-  .div10 {
-    grid-area: 5 / 1 / 6 / 2;
-  }
-  .div11 {
-    grid-area: 5 / 3 / 6 / 4;
-  }
-  .div12 {
-    grid-area: 5 / 5 / 6 / 6;
-  }
-  .div13 {
-    grid-area: 5 / 7 / 6 / 8;
-  }
-  .div14 {
-    grid-area: 5 / 9 / 6 / 10;
+  .triangle {
+    position: relative;
   }
 
-  .triangle {
-    width: 450px;
-    height: 250px;
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
+  .triangle div {
+    position: absolute;
+  }
+
+  .div0 {
+    left: 120px;
+    top: 0px;
+  }
+  .div1 {
+    left: 90px;
+    top: 50px;
+  }
+  .div2 {
+    left: 150px;
+    top: 50px;
+  }
+  .div3 {
+    left: 60px;
+    top: 100px;
+  }
+  .div4 {
+    left: 120px;
+    top: 100px;
+  }
+  .div5 {
+    left: 180px;
+    top: 100px;
+  }
+  .div6 {
+    left: 30px;
+    top: 150px;
+  }
+  .div7 {
+    left: 90px;
+    top: 150px;
+  }
+  .div8 {
+    left: 150px;
+    top: 150px;
+  }
+  .div9 {
+    left: 210px;
+    top: 150px;
+  }
+  .div10 {
+    left: 0px;
+    top: 200px;
+  }
+  .div11 {
+    left: 60px;
+    top: 200px;
+  }
+  .div12 {
+    left: 120px;
+    top: 200px;
+  }
+  .div13 {
+    left: 180px;
+    top: 200px;
+  }
+  .div14 {
+    left: 240px;
+    top: 200px;
   }
 
   .circle {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     @apply rounded-full;
   }
 
   .pole,
   .pick,
   .dest {
-    @apply cursor-pointer;
+    @apply cursor-pointer border-2 border-gray-700;
+  }
+
+  .pick {
+    @apply border-gray-400;
   }
 
   button {
