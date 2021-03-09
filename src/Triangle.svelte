@@ -285,77 +285,26 @@
 
 <style>
   .triangle {
-    position: relative;
+    text-align: center;
+    @apply transform rotate-70;
   }
-
   .triangle div {
-    position: absolute;
+    display: inline-block;
   }
 
   .div0 {
-    left: 120px;
-    top: 0px;
+    flex-basis: 100%;
+    text-align: center;
   }
-  .div1 {
-    left: 90px;
-    top: 50px;
-  }
+  .div1,
   .div2 {
-    left: 150px;
-    top: 50px;
-  }
-  .div3 {
-    left: 60px;
-    top: 100px;
-  }
-  .div4 {
-    left: 120px;
-    top: 100px;
-  }
-  .div5 {
-    left: 180px;
-    top: 100px;
-  }
-  .div6 {
-    left: 30px;
-    top: 150px;
-  }
-  .div7 {
-    left: 90px;
-    top: 150px;
-  }
-  .div8 {
-    left: 150px;
-    top: 150px;
-  }
-  .div9 {
-    left: 210px;
-    top: 150px;
-  }
-  .div10 {
-    left: 0px;
-    top: 200px;
-  }
-  .div11 {
-    left: 60px;
-    top: 200px;
-  }
-  .div12 {
-    left: 120px;
-    top: 200px;
-  }
-  .div13 {
-    left: 180px;
-    top: 200px;
-  }
-  .div14 {
-    left: 240px;
-    top: 200px;
+    flex-basis: 50%;
   }
 
   .circle {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
+    display: inline-block;
     @apply rounded-full;
   }
 
@@ -518,6 +467,10 @@
         on:click={() => change(i)}>
         <!-- {i} -->
       </div>
+    {/if}
+
+    {#if i == 0 || i == 2}
+      <p class="clear-both" />
     {/if}
   {/each}
 </div>
