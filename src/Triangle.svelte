@@ -286,48 +286,63 @@
 <style>
   .div0 {
     grid-area: 1 / 5 / 2 / 6;
+    margin-left: -80px;
   }
   .div1 {
     grid-area: 2 / 4 / 3 / 5;
+    margin-left: -60px;
   }
   .div2 {
     grid-area: 2 / 6 / 3 / 7;
+    margin-left: -100px;
   }
   .div3 {
     grid-area: 3 / 3 / 4 / 4;
+    margin-left: -40px;
   }
   .div4 {
     grid-area: 3 / 5 / 4 / 6;
+    margin-left: -80px;
   }
   .div5 {
     grid-area: 3 / 7 / 4 / 8;
+    margin-left: -120px;
   }
   .div6 {
     grid-area: 4 / 2 / 5 / 3;
+    margin-left: -20px;
   }
   .div7 {
     grid-area: 4 / 4 / 5 / 5;
+    margin-left: -60px;
   }
   .div8 {
     grid-area: 4 / 6 / 5 / 7;
+    margin-left: -100px;
   }
   .div9 {
     grid-area: 4 / 8 / 5 / 9;
+    margin-left: -140px;
   }
   .div10 {
     grid-area: 5 / 1 / 6 / 2;
+    margin-left: 0px;
   }
   .div11 {
     grid-area: 5 / 3 / 6 / 4;
+    margin-left: -40px;
   }
   .div12 {
     grid-area: 5 / 5 / 6 / 6;
+    margin-left: -80px;
   }
   .div13 {
     grid-area: 5 / 7 / 6 / 8;
+    margin-left: -120px;
   }
   .div14 {
     grid-area: 5 / 9 / 6 / 10;
+    margin-left: -160px;
   }
 
   .triangle {
@@ -338,6 +353,7 @@
     grid-template-rows: repeat(5, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    @apply transform-gpu scale-75 sm:scale-100 md:scale-125 lg:scale-150;
   }
 
   .circle {
@@ -472,7 +488,7 @@
         out:send={{ key: i }}
         class="circle div{i} hole"
         on:click={() => change(i)}>
-        <!-- {i} -->
+        {i}
       </div>
     {/if}
     {#if circles[i] == C_POLE}
@@ -481,7 +497,7 @@
         out:send={{ key: i }}
         class="circle div{i} pole {circleColors[i]}"
         on:click={() => change(i)}>
-        <!-- {i} -->
+        {i}
       </div>
     {/if}
     {#if circles[i] == C_PICK}
@@ -490,7 +506,7 @@
         out:send={{ key: i }}
         class="circle div{i} pick {circleColors[i]}-lighter"
         on:click={() => change(i)}>
-        <!-- {i} -->
+        {i}
       </div>
     {/if}
     {#if circles[i] == C_DEST}
@@ -499,7 +515,7 @@
         out:send={{ key: i }}
         class="circle div{i} dest {getDestColor()}-darker"
         on:click={() => change(i)}>
-        <!-- {i} -->
+        {i}
       </div>
     {/if}
   {/each}
