@@ -123,6 +123,12 @@
 
   const getColor = i => colors[i % colors.length]
   const getDestColor = _ => circleColors[circles.indexOf(C_PICK)]
+  $: getCircleColor = i => {
+    if (circles[i] == C_HOLE) return `hole`
+    if (circles[i] == C_POLE) return `${circleColors[i]}`
+    if (circles[i] == C_PICK) return `${circleColors[i]}-lighter`
+    if (circles[i] == C_DEST) return `${getDestColor()}-darker`
+  }
 
   const commonBetween = (source, destination) => {
     const common = adjcs.adjacencyList[source].filter(common =>
@@ -283,182 +289,25 @@
   }
 </script>
 
-<style>
-  .div0 {
-    grid-area: 1 / 5 / 2 / 6;
-    margin-left: -80px;
-  }
-  .div1 {
-    grid-area: 2 / 4 / 3 / 5;
-    margin-left: -60px;
-  }
-  .div2 {
-    grid-area: 2 / 6 / 3 / 7;
-    margin-left: -100px;
-  }
-  .div3 {
-    grid-area: 3 / 3 / 4 / 4;
-    margin-left: -40px;
-  }
-  .div4 {
-    grid-area: 3 / 5 / 4 / 6;
-    margin-left: -80px;
-  }
-  .div5 {
-    grid-area: 3 / 7 / 4 / 8;
-    margin-left: -120px;
-  }
-  .div6 {
-    grid-area: 4 / 2 / 5 / 3;
-    margin-left: -20px;
-  }
-  .div7 {
-    grid-area: 4 / 4 / 5 / 5;
-    margin-left: -60px;
-  }
-  .div8 {
-    grid-area: 4 / 6 / 5 / 7;
-    margin-left: -100px;
-  }
-  .div9 {
-    grid-area: 4 / 8 / 5 / 9;
-    margin-left: -140px;
-  }
-  .div10 {
-    grid-area: 5 / 1 / 6 / 2;
-    margin-left: 0px;
-  }
-  .div11 {
-    grid-area: 5 / 3 / 6 / 4;
-    margin-left: -40px;
-  }
-  .div12 {
-    grid-area: 5 / 5 / 6 / 6;
-    margin-left: -80px;
-  }
-  .div13 {
-    grid-area: 5 / 7 / 6 / 8;
-    margin-left: -120px;
-  }
-  .div14 {
-    grid-area: 5 / 9 / 6 / 10;
-    margin-left: -160px;
+<style lang="postcss">
+  .outer {
+    width: 290px;
   }
 
   .triangle {
     width: 450px;
-    height: 250px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    @apply transform-gpu scale-75 sm:scale-100 md:scale-125 lg:scale-150;
   }
 
   .circle {
     width: 50px;
     height: 50px;
-    @apply rounded-full;
-  }
-
-  .pole,
-  .pick,
-  .dest {
-    @apply cursor-pointer;
-  }
-
-  button {
-    @apply cursor-pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   .hole {
     background-color: hsl(219, 28%, 88%);
-    @apply shadow-inner;
-  }
-
-  .green {
-    background-color: hsl(92, 28%, 65%);
-  }
-
-  .green-lighter {
-    background-color: hsl(92, 28%, 85%);
-  }
-
-  .green-darker {
-    background-color: hsl(92, 28%, 30%);
-  }
-
-  .cyan {
-    background-color: hsl(179, 25%, 65%);
-  }
-
-  .cyan-lighter {
-    background-color: hsl(179, 25%, 85%);
-  }
-
-  .cyan-darker {
-    background-color: hsl(179, 25%, 30%);
-  }
-
-  .blue {
-    background-color: hsl(210, 34%, 63%);
-  }
-
-  .blue-lighter {
-    background-color: hsl(213, 32%, 82%);
-  }
-
-  .blue-darker {
-    background-color: hsl(213, 32%, 37%);
-  }
-
-  .yellow {
-    background-color: hsl(40, 71%, 73%);
-  }
-
-  .yellow-lighter {
-    background-color: hsl(40, 71%, 88%);
-  }
-
-  .yellow-darker {
-    background-color: hsl(40, 71%, 37%);
-  }
-
-  .orange {
-    background-color: hsl(14, 51%, 63%);
-  }
-
-  .orange-lighter {
-    background-color: hsl(14, 51%, 83%);
-  }
-
-  .orange-darker {
-    background-color: hsl(14, 51%, 28%);
-  }
-
-  .red {
-    background-color: hsl(354, 42%, 56%);
-  }
-
-  .red-lighter {
-    background-color: hsl(354, 42%, 76%);
-  }
-
-  .red-darker {
-    background-color: hsl(354, 42%, 28%);
-  }
-
-  .purple {
-    background-color: hsl(311, 20%, 63%);
-  }
-
-  .purple-lighter {
-    background-color: hsl(311, 20%, 83%);
-  }
-
-  .purple-darker {
-    background-color: hsl(311, 20%, 28%);
+    @apply shadow-inner cursor-default;
   }
 
   span {
@@ -475,48 +324,25 @@
   }
 </style>
 
-<button class="restart" on:click={restart}>RESTART GAME</button>
-<button class="undo" on:click={undo}>UNDO</button>
-<span data-cy="gameover" class:gameover>GAME OVER</span>
-<span data-cy="victory" class:victory>VICTORY</span>
+<div class="outer overflow-x-hidden">
+  <div>
+    <button class="restart" on:click={restart}>RESTART GAME</button>
+    <button class="undo" on:click={undo}>UNDO</button>
+    <span data-cy="gameover" class:gameover>GAME OVER</span>
+    <span data-cy="victory" class:victory>VICTORY</span>
+  </div>
 
-<div class="triangle">
-  {#each circles as _, i}
-    {#if circles[i] == C_HOLE}
-      <div
-        in:receive={{ key: i }}
-        out:send={{ key: i }}
-        class="circle div{i} hole"
-        on:click={() => change(i)}>
-        {i}
-      </div>
-    {/if}
-    {#if circles[i] == C_POLE}
-      <div
-        in:receive={{ key: i }}
-        out:send={{ key: i }}
-        class="circle div{i} pole {circleColors[i]}"
-        on:click={() => change(i)}>
-        {i}
-      </div>
-    {/if}
-    {#if circles[i] == C_PICK}
-      <div
-        in:receive={{ key: i }}
-        out:send={{ key: i }}
-        class="circle div{i} pick {circleColors[i]}-lighter"
-        on:click={() => change(i)}>
-        {i}
-      </div>
-    {/if}
-    {#if circles[i] == C_DEST}
-      <div
-        in:receive={{ key: i }}
-        out:send={{ key: i }}
-        class="circle div{i} dest {getDestColor()}-darker"
-        on:click={() => change(i)}>
-        {i}
-      </div>
-    {/if}
-  {/each}
+  <div class="triangle grid-cols-9 grid-rows-5">
+    {#each circles as _, i}
+      {#key circles[i]}
+        <div
+          class="circle rounded-full cursor-pointer div{i} {getCircleColor(i)}"
+          on:click={() => change(i)}
+          in:receive={{ key: i }}
+          out:send={{ key: i }}>
+          <!-- {i} -->
+        </div>
+      {/key}
+    {/each}
+  </div>
 </div>

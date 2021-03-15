@@ -25,17 +25,20 @@
 
 <Tailwind />
 
-<main class="container mx-auto text-center">
-  <div class="level">
-    {#each levels as _, i}
-      <button
-        class="cursor-pointer mr-5"
-        on:click={changeLevel}
-        value={i}
-        class:completed={$completed.includes(i)}
-        class:active={level == i}>{i + 1}</button>
-    {/each}
-  </div>
+<main class="container text-center mx-auto flex h-screen">
+  <div
+    class="m-auto transform-gpu sm:scale-150 md:scale-175 lg:scale-200 xl:scale-225">
+    <div class="level">
+      {#each levels as _, i}
+        <button
+          class="cursor-pointer mx-2"
+          on:click={changeLevel}
+          value={i}
+          class:completed={$completed.includes(i)}
+          class:active={level == i}>{i + 1}</button>
+      {/each}
+    </div>
 
-  <Triangle {side} {variant} />
+    <Triangle {side} {variant} />
+  </div>
 </main>

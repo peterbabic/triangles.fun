@@ -6,7 +6,13 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      scale: {
+        175: "1.75",
+        200: "2",
+        225: "2.25",
+      },
+    },
   },
   variants: {
     extend: {},
