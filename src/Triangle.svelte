@@ -56,6 +56,7 @@
   import { completed } from "./store.js"
   import { levels, colors } from "./levels.js"
   import { crossfade, scale } from "svelte/transition"
+  import Button from "./Button.svelte"
 
   export let side = 5
   export let variant = 0
@@ -318,21 +319,13 @@
   .victory {
     display: inline;
   }
-
-  button {
-    cursor: pointer;
-  }
 </style>
 
 <div class="outer overflow-x-hidden">
-  <div>
-    <button class="restart" on:click={restart}>RESTART GAME</button>
-    <button class="undo" on:click={undo}>UNDO</button>
-    <span data-cy="gameover" class:gameover>GAME OVER</span>
-    <span data-cy="victory" class:victory>VICTORY</span>
-  </div>
+  <span data-cy="gameover" class:gameover>GAME OVER</span>
+  <span data-cy="victory" class:victory>VICTORY</span>
 
-  <div class="triangle grid-cols-9 grid-rows-5">
+  <div class="triangle grid-cols-9 grid-rows-5 mb-4">
     {#each circles as _, i}
       {#key circles[i]}
         <div
@@ -344,5 +337,11 @@
         </div>
       {/key}
     {/each}
+  </div>
+
+  <div class="flex">
+    <Button on:click={restart} icon="Restart" />
+    <div class="flex-grow" />
+    <Button on:click={undo} icon="Undo" />
   </div>
 </div>
