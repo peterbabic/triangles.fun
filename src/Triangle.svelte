@@ -126,9 +126,9 @@
   const getDestColor = _ => circleColors[circles.indexOf(C_PICK)]
   $: getCircleColor = i => {
     if (circles[i] == C_HOLE) return `hole`
-    if (circles[i] == C_POLE) return `${circleColors[i]}`
-    if (circles[i] == C_PICK) return `${circleColors[i]}-lighter`
-    if (circles[i] == C_DEST) return `${getDestColor()}-darker`
+    if (circles[i] == C_POLE) return `bg-${circleColors[i]}`
+    if (circles[i] == C_PICK) return `bg-${circleColors[i]}-lighter`
+    if (circles[i] == C_DEST) return `bg-${getDestColor()}-darker`
   }
 
   const commonBetween = (source, destination) => {
@@ -322,9 +322,6 @@
 </style>
 
 <div class="outer overflow-x-hidden">
-  <span data-cy="gameover" class:gameover>GAME OVER</span>
-  <span data-cy="victory" class:victory>VICTORY</span>
-
   <div class="triangle grid-cols-9 grid-rows-5 mb-4">
     {#each circles as _, i}
       {#key circles[i]}
@@ -340,8 +337,11 @@
   </div>
 
   <div class="flex">
-    <Button on:click={restart} icon="Restart" />
-    <div class="flex-grow" />
-    <Button on:click={undo} icon="Undo" />
+    <Button on:click={restart} icon="restart" color="orange" />
+    <div class="flex-grow">
+      <span data-cy="gameover" class:gameover>GAME OVER</span>
+      <span data-cy="victory" class:victory>VICTORY</span>
+    </div>
+    <Button on:click={undo} icon="undo" />
   </div>
 </div>
