@@ -15,11 +15,11 @@
 
 <style>
   .active {
-    @apply font-bold text-gray-800;
+    @apply font-bold text-gray-darker;
   }
 
   .completed {
-    @apply text-gray-800 bg-gray-200;
+    @apply text-gray-darker bg-gray-lighter;
   }
 </style>
 

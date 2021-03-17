@@ -5,14 +5,20 @@ module.exports = {
     enabled: !process.env.ROLLUP_WATCH,
     mode: "all",
     content: ["./public/index.html", "./src/**/*.svelte"],
+    options: {
+      safelist: [
+        /(bg|border|text)\-(green|cyan|blue|yellow|orange|red|purple)(\-(lighter|darker))?/,
+      ],
+    },
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      gray: colors.gray,
-      white: colors.white,
+      gray: "hsl(219, 28%, 88%)",
+      "gray-lighter": "hsl(218, 27%, 94%)",
+      "gray-darker": "hsl(219, 28%, 68%)",
       green: "hsl(92, 28%, 65%)",
       "green-lighter": "hsl(92, 28%, 85%)",
       "green-darker": "hsl(92, 28%, 30%)",
@@ -44,7 +50,10 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ["active"],
+      textColor: ["active"],
+    },
   },
   plugins: [],
 }

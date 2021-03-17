@@ -11,7 +11,7 @@
 
 <button
   on:click
-  class="block flex-none rounded fill-current text-white px-3 py-2 border-0 border-b-2 bg-{color} border-{color}-darker">
+  class="block flex-none rounded fill-current text-{color}-lighter px-3 py-2 border-0 border-b-2 bg-{color} border-{color}-darker active:text-{color} active:bg-{color}-darker">
   <svg
     class="w-5 h-5"
     xmlns="http://www.w3.org/2000/svg"

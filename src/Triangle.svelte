@@ -307,8 +307,7 @@
   }
 
   .hole {
-    background-color: hsl(219, 28%, 88%);
-    @apply shadow-inner cursor-default;
+    @apply bg-gray shadow-inner cursor-default;
   }
 
   span {
@@ -337,7 +336,7 @@
   </div>
 
   <div class="flex">
-    <Button on:click={restart} icon="restart" color="orange" />
+    <Button on:click={restart} icon="restart" color="blue" />
     <div class="flex-grow">
       <span data-cy="gameover" class:gameover>GAME OVER</span>
       <span data-cy="victory" class:victory>VICTORY</span>
