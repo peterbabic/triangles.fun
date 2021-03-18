@@ -12,6 +12,7 @@
 
 <button
   on:click
+  data-cy={icon}
   class="capitalize flex-auto inline-flex items-center rounded fill-current text-blue-darker px-2 py-2 border-0 border-b-2 bg-gray-lighter border-gray-darker active:text-gray active:bg-gray-darker active:border-t-2 active:border-green-lighter">
   {#if icon}
     <svg

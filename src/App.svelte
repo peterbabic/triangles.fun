@@ -6,10 +6,10 @@
   const jumps = new Graph()
 
   const C_MAX_CIRCLES = 21
-  const C_POLE = 0
-  const C_HOLE = 1
-  const C_PICK = 2
-  const C_DEST = 3
+  const C_POLE = "pole"
+  const C_HOLE = "hole"
+  const C_PICK = "pick"
+  const C_DEST = "dest"
 
   const triangular = n => (n <= 1 ? 1 : n + triangular(n - 1))
   const leftMost = detph => (detph == 0 ? 0 : triangular(detph))
@@ -132,7 +132,7 @@
   const getColor = i => colors[i % colors.length]
   const getDestColor = _ => circleColors[circles.indexOf(C_PICK)]
   $: getCircleColor = i => {
-    if (circles[i] == C_HOLE) return `hole`
+    if (circles[i] == C_HOLE) return `bg-gray`
     if (circles[i] == C_POLE) return `bg-${circleColors[i]}`
     if (circles[i] == C_PICK) return `bg-${circleColors[i]}-lighter`
     if (circles[i] == C_DEST) return `bg-${getDestColor()}-darker`
@@ -318,7 +318,7 @@
   }
 
   .hole {
-    @apply bg-gray shadow-inner cursor-default;
+    @apply shadow-inner cursor-default;
   }
 
   span {
@@ -337,7 +337,7 @@
   <div
     class="m-auto transform-gpu sm:scale-150 md:scale-175 lg:scale-200 xl:scale-225">
     <div class="outer overflow-x-hidden my-4">
-      <div class="grid grid-cols-5 gap-2 mb-4">
+      <div data-cy="levels" class="grid grid-cols-5 gap-2 mb-4">
         {#each levels as _, i}
           <LevelButton {i} {level} on:click={changeLevel} />
         {/each}
@@ -349,10 +349,10 @@
       </div>
 
       <div class="triangle grid grid-cols-9 grid-rows-5 mb-4">
-        {#each circles as _, i}
+        {#each circles as type, i}
           {#key circles[i]}
             <div
-              class="circle rounded-full cursor-pointer div{i} {getCircleColor(i)}"
+              class="circle rounded-full cursor-pointer div{i} {type} {getCircleColor(i)}"
               on:click={() => change(i)}
               in:receive={{ key: i }}
               out:send={{ key: i }}>
