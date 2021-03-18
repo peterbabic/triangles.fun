@@ -321,7 +321,12 @@
 </style>
 
 <div class="outer overflow-x-hidden">
-  <div class="triangle grid-cols-9 grid-rows-5 mb-4">
+  <div>
+    <span data-cy="gameover" class:gameover>GAME OVER</span>
+    <span data-cy="victory" class:victory>VICTORY</span>
+  </div>
+
+  <div class="triangle grid-cols-9 grid-rows-5 mb-6">
     {#each circles as _, i}
       {#key circles[i]}
         <div
@@ -335,12 +340,9 @@
     {/each}
   </div>
 
-  <div class="flex">
+  <div class="flex space-x-2">
+    <Button on:click={console.log} icon="about" color="red" />
     <Button on:click={restart} icon="restart" color="blue" />
-    <div class="flex-grow">
-      <span data-cy="gameover" class:gameover>GAME OVER</span>
-      <span data-cy="victory" class:victory>VICTORY</span>
-    </div>
     <Button on:click={undo} icon="undo" />
   </div>
 </div>
