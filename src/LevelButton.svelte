@@ -16,7 +16,7 @@
 </style>
 
 <button
-  class="rounded border-0 border-b-2 border-gray-darker bg-gray-lighter flex-1 text-center"
+  class="block py-1 rounded border-0 border-b-2 border-gray-darker bg-gray-lighter flex-1 text-center"
   on:click
   value={i}
   class:completed={$completed.includes(i)}
