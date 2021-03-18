@@ -3,8 +3,9 @@
 ## TODO
 
 - [x] add gray shades
-- [ ] update icons
-- [ ] manage UI buttons
-- [ ] fix undo missing animation
-- [ ] fix undo when circle picked
+- [x] update icons
+- [x] manage UI buttons
+- [x] fix undo missing animation
+- [x] fix undo when circle picked
 - [ ] add about page
+- [ ] handle U, R and A keypresses

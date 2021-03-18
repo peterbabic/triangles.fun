@@ -122,15 +122,16 @@
       const [src, dest, color] = moveStack.pop()
       circleColors[src] = color
       jumpReverse(circles, dest, src)
+      clearPick()
+      clearDests()
       victory = false
       gameover = false
-
-      setTimeout(() => (circleColors = circleColors), duration)
     }
   }
 
   const getColor = i => colors[i % colors.length]
   const getDestColor = _ => circleColors[circles.indexOf(C_PICK)]
+
   $: getCircleColor = i => {
     if (circles[i] == C_HOLE) return `bg-gray`
     if (circles[i] == C_POLE) return `bg-${circleColors[i]}`
@@ -151,6 +152,9 @@
 
     return common
   }
+
+  const clearPick = () =>
+    (circles = circles.map(c => (c == C_PICK ? C_POLE : c)))
 
   const clearDests = () =>
     (circles = circles.map(c => (c == C_DEST ? C_HOLE : c)))
