@@ -1,6 +1,5 @@
 <script>
-  export let icon = "restart"
-  export let color = "green"
+  export let icon = ""
 
   const d = []
   d["restart"] =
@@ -13,9 +12,12 @@
 
 <button
   on:click
-  class="capitalize flex-auto inline-flex items-center rounded fill-current text-{color}-lighter px-2 py-2 border-0 border-b-2 bg-{color} border-{color}-darker active:text-{color} active:bg-{color}-darker">
-  <svg
-    class="w-5 h-5 mr-2"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"><path d={d[icon]} /></svg>{icon}
+  class="capitalize flex-auto inline-flex items-center rounded fill-current text-blue-darker px-2 py-2 border-0 border-b-2 bg-gray-lighter border-gray-darker active:text-gray active:bg-gray-darker active:border-t-2 active:border-green-lighter">
+  {#if icon}
+    <svg
+      class="w-5 h-5 mr-2"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"><path d={d[icon]} /></svg>
+  {/if}
+  {icon}
 </button>

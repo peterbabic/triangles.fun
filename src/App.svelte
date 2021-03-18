@@ -114,7 +114,7 @@
       }
     }
 
-    printSolutions(1)
+    printSolutions(-1)
   }
 
   const undo = () => {
@@ -245,6 +245,10 @@
   }
 
   const printSolutions = maxSolutionCount => {
+    if (maxSolutionCount < 0) {
+      return
+    }
+
     let depth = 0
     let solutions = []
     let gameovers = []
