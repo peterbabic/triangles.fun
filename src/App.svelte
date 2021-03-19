@@ -312,6 +312,13 @@
       restart()
     }
   }
+
+  const animate = i =>
+    (level == 0 &&
+      i == 5 &&
+      circles[i] == C_POLE &&
+      moveStack.length == 0) ||
+    circles[i] == C_DEST
 </script>
 
 <style lang="postcss">
@@ -364,15 +371,14 @@
       </div>
 
       <div class="triangle grid grid-cols-9 grid-rows-5 mb-4">
-        {#each circles as type, i}
+        {#each circles as _, i}
           {#key circles[i]}
             <div
-              class="circle rounded-full cursor-pointer div{i} {type} {getCircleColor(i)}"
+              class="circle rounded-full cursor-pointer div{i} {circles[i]} {getCircleColor(i)}"
+              class:animate-pulse={animate(i)}
               on:click={() => change(i)}
               in:receive={{ key: i }}
-              out:send={{ key: i }}>
-              <!-- {i} -->
-            </div>
+              out:send={{ key: i }} />
           {/key}
         {/each}
       </div>
