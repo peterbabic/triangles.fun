@@ -8,4 +8,5 @@
 - [x] fix undo missing animation
 - [x] fix undo when circle picked
 - [ ] add about page
-- [ ] handle U, R and A keypresses
+- [ ] fix victory / gameover modal
+- [x] handle U, R and A keypresses

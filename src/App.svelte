@@ -5,11 +5,7 @@
   const adjcs = new Graph()
   const jumps = new Graph()
 
-  const C_MAX_CIRCLES = 21
-  const C_POLE = "pole"
-  const C_HOLE = "hole"
-  const C_PICK = "pick"
-  const C_DEST = "dest"
+  const C_MAX_CIRCLES = 15
 
   const triangular = n => (n <= 1 ? 1 : n + triangular(n - 1))
   const leftMost = detph => (detph == 0 ? 0 : triangular(detph))
@@ -55,10 +51,15 @@
 <script>
   import { completed } from "./store.js"
   import { levels, colors } from "./levels.js"
-  import { crossfade, scale } from "svelte/transition"
   import Button from "./Button.svelte"
   import Tailwind from "./Components/Tailwind.svelte"
   import LevelButton from "./LevelButton.svelte"
+  import Triangle, {
+    C_POLE,
+    C_HOLE,
+    C_DEST,
+    C_PICK,
+  } from "./Triangle.svelte"
 
   let level = 0
   $: variant = levels[level].variant
@@ -74,12 +75,6 @@
   let gameover
   let victory
   let maxSteps
-
-  const duration = 400
-  const [send, receive] = crossfade({
-    duration,
-    fallback: scale,
-  })
 
   $: if (variant || side) {
     restart()
@@ -130,14 +125,6 @@
   }
 
   const getColor = i => colors[i % colors.length]
-  const getDestColor = _ => circleColors[circles.indexOf(C_PICK)]
-
-  $: getCircleColor = i => {
-    if (circles[i] == C_HOLE) return `bg-gray`
-    if (circles[i] == C_POLE) return `bg-${circleColors[i]}`
-    if (circles[i] == C_PICK) return `bg-${circleColors[i]}-lighter`
-    if (circles[i] == C_DEST) return `bg-${getDestColor()}-darker`
-  }
 
   const commonBetween = (source, destination) => {
     const common = adjcs.adjacencyList[source].filter(common =>
@@ -201,7 +188,8 @@
     circles[destination] = C_POLE
   }
 
-  const change = curr => {
+  const change = event => {
+    const curr = event.detail
     const prev = circles.indexOf(C_PICK)
 
     if (circles[curr] == C_POLE && prev == -1) {
@@ -312,33 +300,11 @@
       restart()
     }
   }
-
-  const animate = i =>
-    (level == 0 &&
-      i == 5 &&
-      circles[i] == C_POLE &&
-      moveStack.length == 0) ||
-    circles[i] == C_DEST
 </script>
 
 <style lang="postcss">
   .outer {
     width: 290px;
-  }
-
-  .triangle {
-    width: 450px;
-  }
-
-  .circle {
-    width: 50px;
-    height: 50px;
-    /* make sqare aorund circle hidden on click/touch */
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
-
-  .hole {
-    @apply shadow-inner cursor-default;
   }
 
   span {
@@ -365,27 +331,21 @@
         {/each}
       </div>
 
-      <div class="absolute">
+      <div class="absolute flex border border-blue">
         <span data-cy="gameover" class:gameover>GAME OVER</span>
         <span data-cy="victory" class:victory>VICTORY</span>
       </div>
 
-      <div class="triangle grid grid-cols-9 grid-rows-5 mb-4">
-        {#each circles as _, i}
-          {#key circles[i]}
-            <div
-              class="circle rounded-full cursor-pointer div{i} {circles[i]} {getCircleColor(i)}"
-              class:animate-pulse={animate(i)}
-              on:click={() => change(i)}
-              in:receive={{ key: i }}
-              out:send={{ key: i }} />
-          {/key}
-        {/each}
-      </div>
+      <Triangle
+        {level}
+        {circles}
+        {circleColors}
+        {moveStack}
+        on:change={change} />
 
       <div class="flex space-x-2">
-        <Button on:click={console.log} icon="about" color="red" />
-        <Button on:click={restart} icon="restart" color="blue" />
+        <Button on:click={console.log} icon="about" />
+        <Button on:click={restart} icon="restart" />
         <Button on:click={undo} icon="undo" />
       </div>
     </div>
