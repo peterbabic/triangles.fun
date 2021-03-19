@@ -1,5 +1,3 @@
-const colors = require("tailwindcss/colors")
-
 module.exports = {
   purge: {
     enabled: !process.env.ROLLUP_WATCH,
@@ -7,7 +5,7 @@ module.exports = {
     content: ["./public/index.html", "./src/**/*.svelte"],
     options: {
       safelist: [
-        /(bg|border|text)\-(green|cyan|blue|yellow|orange|red|purple)(\-(lighter|darker))?/,
+        /^bg\-(green|cyan|blue|yellow|orange|red|purple)(\-(lighter|darker))?/,
       ],
     },
   },

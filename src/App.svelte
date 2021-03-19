@@ -303,6 +303,15 @@
       console.log(proportion.toFixed(2) + "% moves are victory")
     }
   }
+
+  const handleKeydown = event => {
+    if (event.key == "u") {
+      undo()
+    }
+    if (event.key == "r") {
+      restart()
+    }
+  }
 </script>
 
 <style lang="postcss">
@@ -336,6 +345,8 @@
 </style>
 
 <Tailwind />
+
+<svelte:window on:keydown={handleKeydown} />
 
 <main class="container text-center mx-auto flex h-screen">
   <div
