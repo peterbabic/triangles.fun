@@ -54,6 +54,7 @@
   import Button from "./Button.svelte"
   import Tailwind from "./Components/Tailwind.svelte"
   import LevelButton from "./LevelButton.svelte"
+  import Modal from "./Modal.svelte"
   import Triangle, {
     C_POLE,
     C_HOLE,
@@ -72,8 +73,8 @@
   let circles = []
   let circleColors = []
   let moveStack = []
-  let gameover
-  let victory
+  let gameover = false
+  let victory = false
   let maxSteps
 
   $: if (variant || side) {
@@ -302,18 +303,9 @@
   }
 </script>
 
-<style lang="postcss">
+<style>
   .outer {
     width: 290px;
-  }
-
-  span {
-    visibility: hidden;
-  }
-
-  .gameover,
-  .victory {
-    visibility: visible;
   }
 </style>
 
@@ -331,9 +323,9 @@
         {/each}
       </div>
 
-      <div class="absolute flex border border-blue">
-        <span data-cy="gameover" class:gameover>GAME OVER</span>
-        <span data-cy="victory" class:victory>VICTORY</span>
+      <div class="relative text-blue-darker">
+        <Modal position="left" text="victory" invisible={!victory} />
+        <Modal position="right" text="gameover" invisible={!gameover} />
       </div>
 
       <Triangle
