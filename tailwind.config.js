@@ -4,8 +4,13 @@ module.exports = {
     mode: "all",
     content: ["./public/index.html", "./src/**/*.svelte"],
     options: {
+      // defaultExtractor: content => [
+      //   ...(content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || []),
+      //   ...(content.match(/(?<=class:)[^=>\/\s]*/g) || []),
+      // ],
       safelist: [
         /^bg\-(green|cyan|blue|yellow|orange|red|purple)(\-(lighter|darker))?/,
+        /animate-pulse/,
       ],
     },
   },

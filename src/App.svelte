@@ -76,6 +76,7 @@
   let moveStack = []
   let gameover = false
   let victory = false
+  let about = false
   let maxSteps
 
   $: if (variant || side) {
@@ -110,8 +111,6 @@
         j++
       }
     }
-
-    printSolutions(-1)
   }
 
   const undo = () => {
@@ -238,62 +237,6 @@
     }
   }
 
-  const printSolutions = maxSolutionCount => {
-    if (maxSolutionCount < 0) {
-      return
-    }
-
-    let depth = 0
-    let solutions = []
-    let gameovers = []
-    let shadow = [...circles]
-    const moves = new Tree("", depth)
-
-    const recurse = move => {
-      if (
-        maxSolutionCount != 0 &&
-        maxSolutionCount != undefined &&
-        maxSolutionCount <= solutions.length
-      ) {
-        return
-      }
-
-      const hints = getHints(shadow)
-      if (hints.length == 0) {
-        gameovers.push(move.solution)
-
-        return
-      }
-
-      hints.forEach(hint => {
-        getDests(shadow, hint).forEach(destination => {
-          const solution = `${move.solution}  ${hint}>${destination}`
-          const child = new Tree(solution, depth)
-          const lastIndex = move.children.push(child) - 1
-          jumpOver(shadow, hint, destination)
-          depth = depth + 1
-
-          if (depth == maxSteps) {
-            solutions.push(solution)
-          }
-          recurse(move.children[lastIndex])
-          depth = depth - 1
-          jumpReverse(shadow, hint, destination)
-        })
-      })
-    }
-
-    recurse(moves)
-    console.log(solutions)
-
-    if (maxSolutionCount < 1) {
-      console.log(gameovers)
-
-      const proportion = (solutions.length * 100) / gameovers.length
-      console.log(proportion.toFixed(2) + "% moves are victory")
-    }
-  }
-
   const handleKeydown = event => {
     if (event.key == "u") {
       undo()
@@ -302,8 +245,6 @@
       restart()
     }
   }
-
-  let about = false
 </script>
 
 <style>
