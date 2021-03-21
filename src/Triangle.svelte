@@ -56,7 +56,7 @@
   }
 </style>
 
-<div class="triangle grid grid-cols-9 grid-rows-5 mb-4">
+<div class="triangle grid grid-cols-9 grid-rows-5 mb-4 z-0">
   {#each circles as _, i}
     {#key circles[i]}
       <div
