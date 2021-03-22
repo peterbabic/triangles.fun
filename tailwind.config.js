@@ -11,6 +11,8 @@ module.exports = {
       safelist: [
         /^bg\-(green|cyan|blue|yellow|orange|red|purple)(\-(lighter|darker))?/,
         /animate-pulse/,
+        /left-0/,
+        /right-0/,
       ],
     },
   },

@@ -7,3 +7,6 @@ out/
 
 # Local Netlify folder
 .netlify
+
+cypress/videos
+cypress/screenshots
