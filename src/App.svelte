@@ -1,5 +1,4 @@
 <script context="module">
-  import Tree from "./Tree"
   import Graph from "./Graph"
 
   const adjcs = new Graph()
@@ -49,6 +48,7 @@
 </script>
 
 <script>
+  import { fade } from "svelte/transition"
   import { completed } from "./store.js"
   import { levels, colors } from "./levels.js"
   import Button from "./Button.svelte"
@@ -261,7 +261,7 @@
   <div
     class="m-auto transform-gpu sm:scale-150 md:scale-175 lg:scale-200 xl:scale-225">
     <div class="outer overflow-x-hidden my-4">
-      <About hidden={!about} />
+      <About bind:hidden={about} />
 
       <div data-cy="levels" class="grid grid-cols-5 gap-2 mb-4">
         {#each levels as _, i}
@@ -282,7 +282,10 @@
         on:change={change} />
 
       <div class="flex space-x-2">
-        <Button on:click={() => (about = !about)} icon="about" />
+        <Button
+          on:click={() => (about = !about)}
+          invisible={about}
+          icon="about" />
         <Button on:click={restart} invisible={about} icon="restart" />
         <Button on:click={undo} invisible={about} icon="undo" />
       </div>
