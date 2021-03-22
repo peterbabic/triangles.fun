@@ -21,6 +21,7 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
+      white: "#FFFFFF",
       gray: "hsl(219, 28%, 88%)",
       "gray-lighter": "hsl(218, 27%, 94%)",
       "gray-darker": "hsl(219, 28%, 68%)",

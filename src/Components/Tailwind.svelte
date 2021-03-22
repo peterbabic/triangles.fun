@@ -3,6 +3,11 @@
   @import "tailwindcss/components";
   @import "tailwindcss/utilities";
 
+  html,
+  body {
+    @apply bg-white;
+  }
+
   .div0 {
     grid-area: 1 / 5;
     margin-left: -80px;

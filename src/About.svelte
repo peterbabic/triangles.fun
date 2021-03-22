@@ -18,16 +18,12 @@
   a {
     @apply font-bold mt-2;
   }
-
-  div.absolute {
-    background-color: white;
-  }
 </style>
 
 {#if hidden}
   <div class="relative">
     <div
-      class="absolute z-10 rounded text-blue-darker text-left"
+      class="absolute z-10 rounded text-blue-darker text-left bg-white"
       on:click={() => (hidden = false)}
       transition:fade>
       <h1>Triangles.fun</h1>
