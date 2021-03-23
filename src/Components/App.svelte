@@ -1,5 +1,5 @@
 <script context="module">
-  import Graph from "./Graph"
+  import Graph from "../Graph"
 
   const adjcs = new Graph()
   const jumps = new Graph()
@@ -48,11 +48,10 @@
 </script>
 
 <script>
-  import { fade } from "svelte/transition"
-  import { completed } from "./store.js"
-  import { levels, colors } from "./levels.js"
+  import { completed } from "../store.js"
+  import { levels, colors } from "../levels.js"
   import Button from "./Button.svelte"
-  import Tailwind from "./Components/Tailwind.svelte"
+  import Tailwind from "./Tailwind.svelte"
   import LevelButton from "./LevelButton.svelte"
   import Modal from "./Modal.svelte"
   import About from "./About.svelte"

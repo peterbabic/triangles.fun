@@ -68,6 +68,8 @@ I did not find a solution to yet, that happes during test.
 - [x] add about page
 - [x] fix victory / gameover modal
 - [x] handle U, R and A keypresses
+- [ ] polish the `App.svelte`, it is too large
+- [ ] fix the problem of top row getting out of the screen
 
 ## License
 

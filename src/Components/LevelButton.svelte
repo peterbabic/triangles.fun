@@ -1,5 +1,5 @@
 <script>
-  import { completed } from "./store.js"
+  import { completed } from "../store.js"
 
   export let i
   export let level
